@@ -21,6 +21,8 @@ Each stage should be observable, retryable, and tied to a repository commit SHA.
 
 ## 3. Snapshot and inventory
 
+The Milestone 1 local CLI contract, including its JSON schema, exclusions, fixed safety limits, and failure behavior, is documented in [`LOCAL_INVENTORY_CONTRACT.md`](LOCAL_INVENTORY_CONTRACT.md).
+
 Record:
 - Repository identity.
 - Branch/ref requested.

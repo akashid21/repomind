@@ -27,14 +27,14 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 
 ### M1-01: Specify inventory contract and safety limits
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Define the CLI behavior and JSON inventory contract before implementation.
 - **Scope:** Specify command shape, report fields, path representation, deterministic ordering, exclusion reporting, and configurable or fixed limits for file count, individual file size, total bytes, and path depth. Define behavior for unreadable entries, symlinks, and limit exhaustion.
 - **Out of scope:** Technology detection, parsing file contents for language/framework identification, persistence, and source-code analysis.
 - **Dependencies:** None
-- **Acceptance criteria:** The report schema and CLI inputs/outputs are documented; exclusion rules and limit values or defaults are explicit; errors and partial-inventory behavior are defined.
+- **Acceptance criteria:** The report schema and CLI inputs/outputs are documented; exclusion rules and limit values or defaults are explicit; errors and partial-inventory behavior are defined in `LOCAL_INVENTORY_CONTRACT.md`.
 - **Security and data integrity:** Specify root containment and symlink behavior. Inventory must not load environment values, inspect secret contents, or execute repository code.
-- **Documentation:** Update this ticket and, if the contract changes the onboarding design, `REPOSITORY_ONBOARDING.md`.
+- **Documentation:** `LOCAL_INVENTORY_CONTRACT.md`; linked from `REPOSITORY_ONBOARDING.md`.
 
 ### M1-02: Add the local inventory CLI command
 
@@ -55,7 +55,7 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 - **Out of scope:** Reading source contents for semantic analysis, AST parsing, and technology detection.
 - **Dependencies:** M1-01, M1-02
 - **Acceptance criteria:** Traversal returns normalized repository-relative paths in stable order; outside-root traversal is prevented; unreadable entries and limit exhaustion follow the documented behavior.
-- **Security and data integrity:** Never follow symlinks outside the root. Do not execute files. Only read the bounded data necessary to classify candidate files as binary if the chosen design requires it; never read secret values for reporting or prompts.
+- **Security and data integrity:** Never follow symlinks. Do not open or execute repository files; binary classification in v1 is based on the documented extension rules.
 - **Documentation:** Update the inventory contract if implementation exposes a necessary clarification.
 
 ### M1-04: Apply exclusions and emit stable inventory JSON

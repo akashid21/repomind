@@ -116,6 +116,7 @@ Record significant decisions here using:
 
 | Date | Decision | Reason | Consequence |
 |---|---|---|---|
+| 2026-11-07 | Define a stable local inventory JSON contract with fixed v1 safety limits; skip all repository symlinks | Keep the first local scan predictable, bounded, and contained without following repository-controlled links | Inventory omits oversized/deep entries with counts and fails without JSON when hard file-count or total-byte limits are exceeded |
 | TBD | Start with local inventory before GitHub App | Faster feedback and simpler debugging | GitHub acquisition comes later |
 | TBD | PostgreSQL as primary store | Durable relational records and queryable review history | Vector search remains optional |
 | TBD | Feedback creates curated project knowledge, not model retraining | Safer, auditable, repository-scoped learning | Human approval in MVP |

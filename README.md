@@ -9,6 +9,7 @@ RepoMind connects to a software repository, builds an evidence-backed understand
 - [`docs/PRODUCT_REQUIREMENTS.md`](docs/PRODUCT_REQUIREMENTS.md) — product vision, users, scope, requirements, and MVP.
 - [`docs/SYSTEM_ARCHITECTURE.md`](docs/SYSTEM_ARCHITECTURE.md) — components, data flow, storage, security, and proposed stack.
 - [`docs/REPOSITORY_ONBOARDING.md`](docs/REPOSITORY_ONBOARDING.md) — repository discovery and persistent project knowledge.
+- [`docs/LOCAL_INVENTORY_CONTRACT.md`](docs/LOCAL_INVENTORY_CONTRACT.md) — local inventory CLI contract, JSON report, exclusions, and safety limits.
 - [`docs/PR_REVIEW_ENGINE.md`](docs/PR_REVIEW_ENGINE.md) — PR review workflow, evidence, findings, and re-review.
 - [`docs/DEVELOPER_FEEDBACK_AND_LEARNING.md`](docs/DEVELOPER_FEEDBACK_AND_LEARNING.md) — how the reviewer should handle developer replies and learn repository-specific conventions.
 - [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) — staged implementation plan and acceptance criteria.
