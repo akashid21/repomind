@@ -43,7 +43,25 @@ Requirements: Node.js 22 or newer and PostgreSQL 15 or newer.
 3. Run `npm run dev` to start the foundation process, or `npm run db:check` to verify the PostgreSQL connection.
 4. Use `npm run build`, `npm test`, `npm run lint`, and `npm run format:check` for local checks.
 
-TypeScript application code lives in `src/`; tests live in `tests/`; forward-only SQL migration conventions are documented in `migrations/README.md`. The foundation does not yet define application tables or a migration runner. Milestone 1 will add the inventory CLI as a separate feature on top of this project setup.
+TypeScript application code lives in `src/`; tests live in `tests/`; forward-only SQL migration conventions are documented in `migrations/README.md`. The foundation does not yet define application tables or a migration runner.
+
+## Local repository inventory
+
+From the RepoMind project root, run the inventory CLI against a local repository:
+
+```sh
+npm run --silent inventory -- ../path-to-repository
+```
+
+The command writes a stable JSON report to stdout. Save it to a file with shell redirection if useful:
+
+```sh
+npm run --silent inventory -- ../path-to-repository > inventory.json
+```
+
+The report lists repository-relative file paths and filesystem sizes, included directories, totals, and counts of excluded entries. It contains no file contents, absolute root path, timestamps, or technology claims. See [`docs/LOCAL_INVENTORY_CONTRACT.md`](docs/LOCAL_INVENTORY_CONTRACT.md) for the schema, exclusion rules, fixed limits, and error behavior.
+
+Inventory is metadata-only: it does not open file contents, run repository scripts, install dependencies, or execute builds and tests. Symlinks and configured secret/local credential paths are skipped. Secret protection in this milestone is based on names and paths; it does not scan contents for arbitrary secret values. A successful inventory therefore does not certify that the repository contains no secrets.
 
 Environment values are validated at startup. Keep `.env` local and never commit it. The structured logger redacts common credential fields; application code should avoid logging configuration objects or database connection strings.
 

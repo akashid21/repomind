@@ -3,7 +3,7 @@
 **Status:** Defined for Milestone 1
 **Schema version:** 1
 
-This document defines the command, JSON report, exclusions, limits, and failure behavior for the local repository inventory. Traversal, filtering, and end-to-end report output are implemented; M1-05 covers broader acceptance tests and documentation closeout.
+This document defines the command, JSON report, exclusions, limits, and failure behavior for the local repository inventory. Traversal, filtering, CLI output, acceptance tests, and usage documentation are implemented for Milestone 1.
 
 ## Command
 

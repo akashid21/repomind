@@ -29,6 +29,8 @@ Do not build the whole platform at once. Start with local repository understandi
 
 **Acceptance:** given the pilot repository, RepoMind lists files and directories without reading secrets or executing repository code.
 
+**Status:** Complete. The local CLI validates its root, performs bounded metadata-only traversal, filters documented paths, emits stable schema-v1 JSON, and is covered by fixture and subprocess tests. Usage and limitations are documented in `README.md` and `LOCAL_INVENTORY_CONTRACT.md`. The pilot repository is not present in this workspace, so validation against that repository remains a manual acceptance check.
+
 ## Milestone 2 — Deterministic technology detection
 
 - Detect languages from file extensions and content where appropriate.
@@ -119,6 +121,7 @@ Record significant decisions here using:
 | 2026-11-07 | Define a stable local inventory JSON contract with fixed v1 safety limits; skip all repository symlinks | Keep the first local scan predictable, bounded, and contained without following repository-controlled links | Inventory omits oversized/deep entries with counts and fails without JSON when hard file-count or total-byte limits are exceeded |
 | 2026-11-07 | Set v1 inventory limits to 50 path components, 20 MiB per file, 200,000 files, and 2 GiB total included size | Leave room for larger source files and repositories while retaining explicit bounds; inventory reads metadata only | Limits are fixed for v1 and should be revisited after measuring the pilot repository |
 | 2026-11-07 | Cap included directories at 200,000 | Bound report memory even for repositories containing very large numbers of empty directories | Exceeding the directory cap fails the inventory without JSON |
+| 2026-11-07 | Close M1 with fixture and subprocess coverage plus README usage instructions | Verify the user-visible CLI contract, report stability, safety properties, and failure output | Platform-specific unreadable-permission and special-file fixtures remain outside automated tests; the pilot scan remains a manual acceptance check |
 | TBD | Start with local inventory before GitHub App | Faster feedback and simpler debugging | GitHub acquisition comes later |
 | TBD | PostgreSQL as primary store | Durable relational records and queryable review history | Vector search remains optional |
 | TBD | Feedback creates curated project knowledge, not model retraining | Safer, auditable, repository-scoped learning | Human approval in MVP |

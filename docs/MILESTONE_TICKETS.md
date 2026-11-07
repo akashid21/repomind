@@ -71,11 +71,11 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 
 ### M1-05: Add inventory tests and close out documentation
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Verify expected inventory behavior and important unsafe or malformed input cases.
 - **Scope:** Add isolated fixture-based tests for valid and missing paths, non-directory paths, exclusions and retained files, deterministic ordering, symlink escape, unreadable entries where practical, binary classification, and each configured limit. Document setup and usage.
 - **Out of scope:** Running tests or builds from an inventoried repository; tests for later milestone features.
 - **Dependencies:** M1-02, M1-03, M1-04
-- **Acceptance criteria:** Tests cover expected behavior and the listed failure cases; tests use temporary fixtures and do not execute fixture repository code; CLI usage and safety behavior are documented; Milestone 1 roadmap acceptance criteria can be checked against the resulting output.
-- **Security and data integrity:** Fixtures include secret-like filenames/content to verify values are not emitted or logged. No repository scripts or dependency installation are invoked by inventory tests.
-- **Documentation:** Update `IMPLEMENTATION_ROADMAP.md` and `REPOSITORY_ONBOARDING.md` if delivered behavior clarifies the milestone contract.
+- **Acceptance criteria:** Fixture tests cover root validation, exclusions and retained files, stable ordering, symlink escape, binary classification, and every configured limit. A subprocess test verifies JSON-only success output, failure output, secret value omission, and that repository scripts are not run. CLI usage and safety behavior are documented; Milestone 1 roadmap acceptance criteria are checkable from the report.
+- **Security and data integrity:** Fixtures include secret-like filenames and content; tests confirm values are not emitted and scripts are not invoked. No repository scripts or dependency installation are run by inventory tests. OS permission errors and special files are not constructed in automated tests because Node's portable test APIs do not reliably create those conditions; traversal handles recoverable permission errors in code.
+- **Documentation:** `README.md`, `LOCAL_INVENTORY_CONTRACT.md`, and this ticket; onboarding links to the contract.
