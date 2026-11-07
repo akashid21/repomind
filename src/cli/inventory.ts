@@ -53,7 +53,7 @@ async function main(): Promise<void> {
   try {
     const repositoryPath = parseInventoryArgs(process.argv.slice(2));
     await resolveInventoryRoot(repositoryPath);
-    process.stderr.write("Inventory traversal is not implemented yet.\n");
+    process.stderr.write("Inventory report output is not wired yet.\n");
     process.exitCode = 1;
   } catch (error) {
     const message =

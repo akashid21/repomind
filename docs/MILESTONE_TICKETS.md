@@ -29,7 +29,7 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 
 - **Status:** Done
 - **Goal:** Define the CLI behavior and JSON inventory contract before implementation.
-- **Scope:** Specify command shape, report fields, path representation, deterministic ordering, exclusion reporting, and configurable or fixed limits for file count, individual file size, total bytes, and path depth. Define behavior for unreadable entries, symlinks, and limit exhaustion.
+- **Scope:** Specify command shape, report fields, path representation, deterministic ordering, exclusion reporting, and fixed limits for directory count, file count, individual file size, total bytes, and path depth. Define behavior for unreadable entries, symlinks, and limit exhaustion.
 - **Out of scope:** Technology detection, parsing file contents for language/framework identification, persistence, and source-code analysis.
 - **Dependencies:** None
 - **Acceptance criteria:** The report schema and CLI inputs/outputs are documented; exclusion rules and limit values or defaults are explicit; errors and partial-inventory behavior are defined in `LOCAL_INVENTORY_CONTRACT.md`.
@@ -38,23 +38,23 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 
 ### M1-02: Add the local inventory CLI command
 
-- **Status:** In progress
-- **Goal:** Provide an invokable inventory command on the Milestone 0 TypeScript foundation that accepts a repository path and emits the defined JSON report.
+- **Status:** Done
+- **Goal:** Provide an invokable inventory command on the Milestone 0 TypeScript foundation that accepts and validates a repository path.
 - **Scope:** Add the inventory command entry point and argument handling using the existing project setup; validate arguments and surface clear errors.
 - **Out of scope:** API server, database, queue, GitHub integration, technology detection, and unrelated lint/format tooling beyond what is needed for this command.
 - **Dependencies:** M1-01
-- **Acceptance criteria:** The package command is registered; argument parsing accepts exactly one path; root validation resolves a directory to its canonical path, permits a symlink as the user-supplied root, and rejects missing, inaccessible, and non-directory paths with a useful error. End-to-end JSON output is verified when M1-03 and M1-04 connect traversal and serialization.
+- **Acceptance criteria:** The package command is registered; argument parsing accepts exactly one path; root validation resolves a directory to its canonical path, permits a symlink as the user-supplied root, and rejects missing, inaccessible, and non-directory paths with a useful error. End-to-end JSON output belongs to M1-04.
 - **Security and data integrity:** Resolve and validate the root before traversal; do not invoke repository scripts or package managers.
 - **Documentation:** Document the local command in the inventory contract; keep the contract's end-to-end output requirements as the milestone target.
 
 ### M1-03: Implement safe repository traversal
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Enumerate repository directories and candidate files without leaving the selected root or exceeding defined resource limits.
-- **Scope:** Implement deterministic traversal, root containment checks, symlink handling, and file-count, file-size, total-byte, and path-depth limit enforcement as specified by M1-01.
+- **Scope:** Implement deterministic traversal, root containment checks, symlink handling, and directory-count, file-count, file-size, total-byte, and path-depth limit enforcement as specified by M1-01.
 - **Out of scope:** Reading source contents for semantic analysis, AST parsing, and technology detection.
 - **Dependencies:** M1-01, M1-02
-- **Acceptance criteria:** Traversal returns normalized repository-relative paths in stable order; outside-root traversal is prevented; unreadable entries and limit exhaustion follow the documented behavior.
+- **Acceptance criteria:** Traversal returns normalized repository-relative paths in stable order; outside-root traversal is prevented; unreadable entries and all configured limit outcomes follow the documented behavior.
 - **Security and data integrity:** Never follow symlinks. Do not open or execute repository files; binary classification in v1 is based on the documented extension rules.
 - **Documentation:** Update the inventory contract if implementation exposes a necessary clarification.
 

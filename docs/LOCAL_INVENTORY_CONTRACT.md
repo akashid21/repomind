@@ -3,7 +3,7 @@
 **Status:** Defined for Milestone 1
 **Schema version:** 1
 
-This document defines the command, JSON report, exclusions, limits, and failure behavior for the local repository inventory. It is a design contract; it does not imply that the command is implemented yet.
+This document defines the command, JSON report, exclusions, limits, and failure behavior for the local repository inventory. Traversal and CLI validation are implemented, while filtering and end-to-end report output are completed in M1-04.
 
 ## Command
 
@@ -71,12 +71,13 @@ Milestone 1 uses fixed defaults; no per-run override flags are included in v1.
 
 | Limit | Default | Behavior |
 |---|---:|---|
-| Maximum path depth | 40 components below the root | Skip that entry/subtree and increment `tooDeep`. |
-| Maximum included file size | 5 MiB | Skip that file and increment `oversized`. |
-| Maximum included files | 100,000 | Abort with an error and no JSON if the next included file exceeds the cap. |
-| Maximum included total size | 500 MiB | Abort with an error and no JSON if including the next file exceeds the cap. |
+| Maximum path depth | 50 components below the root | Skip that entry/subtree and increment `tooDeep`. |
+| Maximum included file size | 20 MiB | Skip that file and increment `oversized`. |
+| Maximum included files | 200,000 | Abort with an error and no JSON if the next included file exceeds the cap. |
+| Maximum included directories | 200,000 | Abort with an error and no JSON if the next readable, included directory exceeds the cap. |
+| Maximum included total size | 2 GiB | Abort with an error and no JSON if including the next file exceeds the cap. |
 
-The file-count and total-size caps are hard failures so callers cannot mistake an incomplete report for a complete inventory. Oversized files and over-depth entries are skipped with explicit counts. Counts and byte limits apply after path exclusions and before adding the file to the report.
+The file-count, directory-count, and total-size caps are hard failures so callers cannot mistake an incomplete report for a complete inventory. Oversized files and over-depth entries are skipped with explicit counts. File counts and byte limits apply after path exclusions and before adding the file to the report. The directory count applies after path exclusions and depth checks; unreadable directories do not count as included. These v1 defaults allow larger repositories and lockfiles while bounding the amount of metadata and report output retained in memory. They are not calibrated against the pilot repository because its path is not currently available.
 
 ## Errors and partial inventory
 
@@ -86,6 +87,7 @@ The file-count and total-size caps are hard failures so callers cannot mistake a
 - File over the per-file limit: skip and increment `oversized`.
 - Entry beyond the depth limit: skip the entry/subtree and increment `tooDeep`.
 - Included-file count or total-byte hard cap exceeded: fail the whole command; do not emit a partial JSON document.
+- Included-directory hard cap exceeded: fail the whole command; do not emit a partial JSON document.
 - Unexpected I/O failure: fail with a nonzero exit code and no JSON.
 
 ## Implementation notes
