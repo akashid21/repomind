@@ -41,6 +41,8 @@ Do not build the whole platform at once. Start with local repository understandi
 
 **Acceptance:** report identifies the pilot's Ruby/Rails and JavaScript/TypeScript/React stack with evidence; uncertain technologies remain uncertain.
 
+**Status:** Not started. Work is split into M2-01 through M2-07 in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md).
+
 ## Milestone 3 — Code structure analysis
 
 - Add Ruby Prism analyzer.
@@ -106,11 +108,11 @@ Do not build the whole platform at once. Start with local repository understandi
 
 **Acceptance:** stable operation on more than one representative repository and documented limitations.
 
-## Recommended first coding task
+## Initial implementation task
 
-Implement Milestone 1 only: a local repository inventory CLI that emits JSON. Do not start with agents, embeddings, a dashboard, Redis, or GitHub webhooks.
+The first implementation task was Milestone 1: a local repository inventory CLI that emits JSON. It is complete. Proceed milestone by milestone; Milestone 2 is the next planned work.
 
-Milestone work is tracked as sub-tickets in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md). Use its ticket format for future milestones; the current ticket set covers Milestone 1.
+Milestone work is tracked as sub-tickets in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md). Use its ticket format when planning each milestone; tickets are created only for milestones selected for upcoming work.
 
 ## Decision log
 
@@ -122,6 +124,8 @@ Record significant decisions here using:
 | 2026-11-07 | Set v1 inventory limits to 50 path components, 20 MiB per file, 200,000 files, and 2 GiB total included size | Leave room for larger source files and repositories while retaining explicit bounds; inventory reads metadata only | Limits are fixed for v1 and should be revisited after measuring the pilot repository |
 | 2026-11-07 | Cap included directories at 200,000 | Bound report memory even for repositories containing very large numbers of empty directories | Exceeding the directory cap fails the inventory without JSON |
 | 2026-11-07 | Close M1 with fixture and subprocess coverage plus README usage instructions | Verify the user-visible CLI contract, report stability, safety properties, and failure output | Platform-specific unreadable-permission and special-file fixtures remain outside automated tests; the pilot scan remains a manual acceptance check |
+| 2026-11-07 | Break Milestone 2 into seven reviewable tickets before implementation | Specify evidence and safety contracts first, then build small detector groups and a stable profile output | Initial support targets the pilot stack and explicit manifest/configuration evidence; it does not claim runtime usage |
+| 2026-11-07 | Define technology profile v1 as repository evidence, with bounded reads of `package.json` and literal `Gemfile` declarations | Support useful pilot-stack signals while keeping repository content inert and limiting exposure | Profile claims cite relative evidence paths and confidence; runtime usage is never inferred, and other configs begin as path-only signals |
 | TBD | Start with local inventory before GitHub App | Faster feedback and simpler debugging | GitHub acquisition comes later |
 | TBD | PostgreSQL as primary store | Durable relational records and queryable review history | Vector search remains optional |
 | TBD | Feedback creates curated project knowledge, not model retraining | Safer, auditable, repository-scoped learning | Human approval in MVP |

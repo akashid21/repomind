@@ -79,3 +79,84 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 - **Acceptance criteria:** Fixture tests cover root validation, exclusions and retained files, stable ordering, symlink escape, binary classification, and every configured limit. A subprocess test verifies JSON-only success output, failure output, secret value omission, and that repository scripts are not run. CLI usage and safety behavior are documented; Milestone 1 roadmap acceptance criteria are checkable from the report.
 - **Security and data integrity:** Fixtures include secret-like filenames and content; tests confirm values are not emitted and scripts are not invoked. No repository scripts or dependency installation are run by inventory tests. OS permission errors and special files are not constructed in automated tests because Node's portable test APIs do not reliably create those conditions; traversal handles recoverable permission errors in code.
 - **Documentation:** `README.md`, `LOCAL_INVENTORY_CONTRACT.md`, and this ticket; onboarding links to the contract.
+
+## Milestone 2 — Deterministic Technology Detection
+
+These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md`: detect technology hints from the M1 inventory and selected repository manifests/configuration, attach evidence and confidence, and emit a stable technology profile. Detection is deterministic; repository code and scripts are never executed.
+
+### M2-01: Specify the technology profile and detection contract
+
+- **Status:** Done
+- **Goal:** Define which claims RepoMind may make, how it cites evidence, and the stable technology profile format.
+- **Scope:** Specify profile fields, evidence records, confidence levels, detection methods, categories, command behavior, ordering, malformed/unsupported input handling, and the distinction between files/dependencies being present or configured versus technology being actively used.
+- **Out of scope:** Implementing detectors, persistence, code parsing, runtime observation, and AI-based inference.
+- **Dependencies:** M1-05
+- **Acceptance criteria:** The profile schema and CLI contract are documented in `TECHNOLOGY_DETECTION_CONTRACT.md`; every technology claim can cite one or more repository-relative evidence paths and a deterministic method; the contract does not present configured dependencies as proof of active use.
+- **Security and data integrity:** Define an allowlist of manifest/configuration inputs that may be read, bounded read sizes, and handling for secrets and malformed data. Repository content remains untrusted and is never executed.
+- **Documentation:** `docs/TECHNOLOGY_DETECTION_CONTRACT.md`; linked from `docs/REPOSITORY_ONBOARDING.md`.
+
+### M2-02: Add bounded manifest and configuration readers
+
+- **Status:** Not started
+- **Goal:** Safely read only the contract-approved files needed by deterministic detectors.
+- **Scope:** Add small typed helpers to select allowlisted paths from inventory, enforce size bounds, read and parse supported data formats without evaluation, and return clear outcomes for malformed, missing, or unsupported inputs.
+- **Out of scope:** Reading arbitrary source files, language parsing, detector rules, persistence, and executing repository tools.
+- **Dependencies:** M2-01
+- **Acceptance criteria:** Readers accept only approved repository-relative inputs contained under the canonical root; oversized inputs are skipped or reported as specified by the contract; malformed data does not crash profile generation or create unsupported claims.
+- **Security and data integrity:** Do not follow symlinks, evaluate code, load environment values, or log file contents; reject path escapes and respect bounded reads.
+- **Documentation:** Update the technology detection contract with implemented reader behavior.
+
+### M2-03: Detect languages and package managers
+
+- **Status:** Not started
+- **Goal:** Report language and package-manager evidence deterministically from inventory paths and supported manifests.
+- **Scope:** Implement extension-based language signals and explicit manifest/lockfile indicators for the initial supported set, including Ruby and JavaScript/TypeScript; emit path-backed evidence and confidence according to M2-01.
+- **Out of scope:** Framework detection, parsing source code for symbols, dependency installation, and claims about runtime usage.
+- **Dependencies:** M2-01, M2-02
+- **Acceptance criteria:** Fixtures detect supported language and package-manager signals, preserve multiple languages, and avoid claims when evidence is absent or ambiguous; each result identifies its evidence paths.
+- **Security and data integrity:** Use paths and bounded metadata/manifest parsing only; do not install packages or execute scripts.
+- **Documentation:** Document supported extensions, manifests, lockfiles, and known blind spots in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
+
+### M2-04: Detect frameworks and test tools
+
+- **Status:** Not started
+- **Goal:** Identify configured framework and test-tool hints from supported manifests and configuration files.
+- **Scope:** Add deterministic rules for the pilot stack and initial manifest/config indicators, including Rails, React, and common test-tool declarations; report each claim with evidence, confidence, and detection method.
+- **Out of scope:** Proving runtime use, analyzing application architecture, executing tests, or broad exhaustive ecosystem coverage.
+- **Dependencies:** M2-01, M2-02, M2-03
+- **Acceptance criteria:** Fixtures identify the documented Rails/React and test-tool indicators when configured; absent, malformed, or conflicting evidence is represented conservatively and does not become an unsupported certainty.
+- **Security and data integrity:** Parse allowlisted files as data only; never run package managers, tests, or repository-defined commands.
+- **Documentation:** Update supported framework/tool evidence rules and limitations in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
+
+### M2-05: Detect database and infrastructure hints
+
+- **Status:** Not started
+- **Goal:** Report database and infrastructure technologies indicated by manifests and configuration paths.
+- **Scope:** Add a bounded initial rule set for database clients/configuration and infrastructure indicators such as Docker, Compose, Terraform, and Kubernetes; include path-backed evidence and confidence.
+- **Out of scope:** Connecting to databases or cloud services, validating deployment behavior, inspecting runtime state, and architecture inference.
+- **Dependencies:** M2-01, M2-02
+- **Acceptance criteria:** Fixtures detect documented database and infrastructure hints from supported files; unknown or incomplete hints remain qualified rather than being promoted to confirmed runtime facts.
+- **Security and data integrity:** Never load `.env` values, credentials, or cloud secrets; parse only allowlisted non-secret configuration and do not contact external systems.
+- **Documentation:** Record supported indicators, secret exclusions, and limitations in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
+
+### M2-06: Emit a stable technology profile
+
+- **Status:** Not started
+- **Goal:** Provide a CLI entry point that emits the combined technology profile as deterministic JSON.
+- **Scope:** Connect the M1 inventory, bounded readers, and detectors; serialize schema-versioned output with stable ordering and clear failure behavior.
+- **Out of scope:** Database storage, API endpoints, incremental indexing, and changes to the M1 inventory JSON schema.
+- **Dependencies:** M2-03, M2-04, M2-05
+- **Acceptance criteria:** The documented CLI accepts one repository path, emits only valid stable JSON on success, keeps diagnostics on stderr, and exits nonzero without partial JSON on fatal errors; repeated runs over unchanged fixtures produce byte-for-byte identical output.
+- **Security and data integrity:** Reuse M1 root validation and traversal safeguards; profile contains no absolute local paths, source contents, secret values, or unsubstantiated claims.
+- **Documentation:** Document CLI use and profile examples in `README.md` and `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
+
+### M2-07: Test technology detection and close out documentation
+
+- **Status:** Not started
+- **Goal:** Verify supported detection rules, evidence quality, stable profile output, and safety behavior.
+- **Scope:** Add isolated fixtures for supported and unsupported signals, missing/malformed/oversized manifests, conflicting evidence, stable output, and secret-like values; document setup, usage, supported scope, and limitations.
+- **Out of scope:** Detection features reserved for later milestones, repository code execution, and persistence.
+- **Dependencies:** M2-02, M2-03, M2-04, M2-05, M2-06
+- **Acceptance criteria:** Tests prove technology claims are evidence-backed, uncertain or absent signals are not overstated, malformed inputs are handled as specified, outputs are stable, and fixture scripts are never run; Milestone 2 acceptance can be checked against the pilot profile.
+- **Security and data integrity:** Fixtures confirm secret values and absolute paths are not emitted; tests never install dependencies or execute repository scripts.
+- **Documentation:** Update `README.md`, `docs/REPOSITORY_ONBOARDING.md`, `docs/TECHNOLOGY_DETECTION_CONTRACT.md`, and `docs/IMPLEMENTATION_ROADMAP.md` as needed.

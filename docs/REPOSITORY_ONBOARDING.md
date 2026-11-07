@@ -23,6 +23,8 @@ Each stage should be observable, retryable, and tied to a repository commit SHA.
 
 The Milestone 1 local CLI contract, including its JSON schema, exclusions, fixed safety limits, and failure behavior, is documented in [`LOCAL_INVENTORY_CONTRACT.md`](LOCAL_INVENTORY_CONTRACT.md).
 
+Milestone 2 technology profile schema, evidence/confidence semantics, bounded manifest inputs, and safety behavior are documented in [`TECHNOLOGY_DETECTION_CONTRACT.md`](TECHNOLOGY_DETECTION_CONTRACT.md).
+
 Record:
 - Repository identity.
 - Branch/ref requested.
