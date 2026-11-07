@@ -17,6 +17,8 @@ Do not build the whole platform at once. Start with local repository understandi
 
 **Acceptance:** project runs locally, tests run, config is validated, and the first database connection works.
 
+**Status:** Complete. The repository has a Node.js/TypeScript setup, quality scripts, validated environment configuration, structured logging, a PostgreSQL connection check, and documented SQL migration conventions. No application schema or migration runner is introduced before a feature requires one.
+
 ## Milestone 1 — Local repository inventory
 
 - Accept a local repository path through a CLI command.
@@ -105,6 +107,8 @@ Do not build the whole platform at once. Start with local repository understandi
 ## Recommended first coding task
 
 Implement Milestone 1 only: a local repository inventory CLI that emits JSON. Do not start with agents, embeddings, a dashboard, Redis, or GitHub webhooks.
+
+Milestone work is tracked as sub-tickets in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md). Use its ticket format for future milestones; the current ticket set covers Milestone 1.
 
 ## Decision log
 

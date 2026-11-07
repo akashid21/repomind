@@ -58,6 +58,15 @@ Project Knowledge          Findings + Reassessment
 
 A local CLI can be used before building a full GitHub App. It should call the same onboarding services as the future API.
 
+### Milestone 0 foundation choices
+
+- Node.js 22+ with TypeScript and strict compiler settings.
+- npm scripts for build, type checking, linting, formatting, tests, local startup, and database connectivity.
+- Zod for startup environment validation and Pino for structured logging with credential-field redaction.
+- `pg` for PostgreSQL connectivity. The initial connection check runs `SELECT 1` and does not expose connection settings in logs.
+- Ordered, forward-only SQL migration files. No ORM, application schema, or automated migration runner is selected until the first persisted feature requires one.
+- Vitest for the initial automated test runner.
+
 ## 3. Major components
 
 ### 3.1 GitHub integration

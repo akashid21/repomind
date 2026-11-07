@@ -33,6 +33,19 @@ RepoMind connects to a software repository, builds an evidence-backed understand
 4. Keep these docs updated as architecture and product decisions change.
 5. Commit documentation and implementation changes together when appropriate.
 
+## Local development foundation
+
+Requirements: Node.js 22 or newer and PostgreSQL 15 or newer.
+
+1. Install dependencies with `npm install`.
+2. Copy `.env.example` to `.env` and adjust `DATABASE_URL` for your local PostgreSQL instance.
+3. Run `npm run dev` to start the foundation process, or `npm run db:check` to verify the PostgreSQL connection.
+4. Use `npm run build`, `npm test`, `npm run lint`, and `npm run format:check` for local checks.
+
+TypeScript application code lives in `src/`; tests live in `tests/`; forward-only SQL migration conventions are documented in `migrations/README.md`. The foundation does not yet define application tables or a migration runner. Milestone 1 will add the inventory CLI as a separate feature on top of this project setup.
+
+Environment values are validated at startup. Keep `.env` local and never commit it. The structured logger redacts common credential fields; application code should avoid logging configuration objects or database connection strings.
+
 ## Documentation maintenance
 
 When a decision changes:
