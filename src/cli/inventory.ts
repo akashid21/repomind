@@ -1,8 +1,13 @@
 import { realpath, stat } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import {
+  createInventoryReport,
+  serializeInventoryReport,
+} from "../inventory/report.js";
+import { InventoryTraversalError } from "../inventory/traversal.js";
 
-const USAGE = "Usage: npm run inventory -- <repository-path>";
+const USAGE = "Usage: npm run --silent inventory -- <repository-path>";
 
 export class InventoryCliError extends Error {
   constructor(message: string) {
@@ -52,12 +57,13 @@ export async function resolveInventoryRoot(
 async function main(): Promise<void> {
   try {
     const repositoryPath = parseInventoryArgs(process.argv.slice(2));
-    await resolveInventoryRoot(repositoryPath);
-    process.stderr.write("Inventory report output is not wired yet.\n");
-    process.exitCode = 1;
+    const canonicalRoot = await resolveInventoryRoot(repositoryPath);
+    const report = await createInventoryReport(canonicalRoot);
+    process.stdout.write(serializeInventoryReport(report));
   } catch (error) {
     const message =
-      error instanceof InventoryCliError
+      error instanceof InventoryCliError ||
+      error instanceof InventoryTraversalError
         ? error.message
         : "Inventory command failed unexpectedly.";
     process.stderr.write(`${message}\n`);

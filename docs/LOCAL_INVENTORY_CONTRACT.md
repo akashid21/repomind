@@ -3,14 +3,14 @@
 **Status:** Defined for Milestone 1
 **Schema version:** 1
 
-This document defines the command, JSON report, exclusions, limits, and failure behavior for the local repository inventory. Traversal and CLI validation are implemented, while filtering and end-to-end report output are completed in M1-04.
+This document defines the command, JSON report, exclusions, limits, and failure behavior for the local repository inventory. Traversal, filtering, and end-to-end report output are implemented; M1-05 covers broader acceptance tests and documentation closeout.
 
 ## Command
 
 The command will be invoked from the RepoMind project root as:
 
 ```sh
-npm run inventory -- <repository-path>
+npm run --silent inventory -- <repository-path>
 ```
 
 It accepts exactly one local path. Relative paths are resolved from the caller's current working directory. The path must resolve to an existing directory. The root itself may be a symlink; RepoMind resolves it to its real path before walking. The resolved root is used for containment checks and is not written into the report.

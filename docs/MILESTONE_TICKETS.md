@@ -60,7 +60,7 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 
 ### M1-04: Apply exclusions and emit stable inventory JSON
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Produce a useful, reproducible inventory from traversal results.
 - **Scope:** Filter generated, binary, and irrelevant paths using documented rules; retain important project inputs such as manifests, lockfiles, migrations, tests, CI and Docker configuration, and schemas; serialize the report with stable ordering and schema.
 - **Out of scope:** Technology profiles, file-content summaries, language/framework claims, and persistent storage.

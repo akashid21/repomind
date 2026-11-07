@@ -45,7 +45,7 @@ describe("inventory CLI arguments", () => {
   ])("rejects $name", ({ args }) => {
     expect(() => parseInventoryArgs(args)).toThrow(InventoryCliError);
     expect(() => parseInventoryArgs(args)).toThrow(
-      "Usage: npm run inventory -- <repository-path>",
+      "Usage: npm run --silent inventory -- <repository-path>",
     );
   });
 });
