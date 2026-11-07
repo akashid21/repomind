@@ -16,7 +16,8 @@
     "format:check": "prettier --check 'src/**/*.ts' 'tests/**/*.ts' '*.{json,js}'",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:check": "node --env-file-if-exists=.env --import tsx src/cli/db-check.ts"
+    "db:check": "node --env-file-if-exists=.env --import tsx src/cli/db-check.ts",
+    "inventory": "node --import tsx src/cli/inventory.ts"
   },
   "dependencies": {
     "pg": "^8.16.3",

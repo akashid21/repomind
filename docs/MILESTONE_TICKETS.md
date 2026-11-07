@@ -38,14 +38,14 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 
 ### M1-02: Add the local inventory CLI command
 
-- **Status:** Not started
+- **Status:** In progress
 - **Goal:** Provide an invokable inventory command on the Milestone 0 TypeScript foundation that accepts a repository path and emits the defined JSON report.
 - **Scope:** Add the inventory command entry point and argument handling using the existing project setup; validate arguments and surface clear errors.
 - **Out of scope:** API server, database, queue, GitHub integration, technology detection, and unrelated lint/format tooling beyond what is needed for this command.
 - **Dependencies:** M1-01
-- **Acceptance criteria:** The command can be invoked with a local path, rejects missing or invalid arguments with a useful error, and writes valid JSON to the documented output destination on success. It uses the package structure and quality tooling established in Milestone 0.
+- **Acceptance criteria:** The package command is registered; argument parsing accepts exactly one path; root validation resolves a directory to its canonical path, permits a symlink as the user-supplied root, and rejects missing, inaccessible, and non-directory paths with a useful error. End-to-end JSON output is verified when M1-03 and M1-04 connect traversal and serialization.
 - **Security and data integrity:** Resolve and validate the root before traversal; do not invoke repository scripts or package managers.
-- **Documentation:** Document the local command and its expected output.
+- **Documentation:** Document the local command in the inventory contract; keep the contract's end-to-end output requirements as the milestone target.
 
 ### M1-03: Implement safe repository traversal
 
