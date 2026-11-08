@@ -4,24 +4,24 @@
 
 ## 1. Goal
 
-Review a PR using the exact diff plus relevant repository context. Detect likely defects, regressions, security issues, maintainability problems, and violations of confirmed project rules.
+Review a code change using its exact diff plus relevant repository context. The same review core serves local changes first and GitHub pull requests later. Detect likely defects, regressions, security issues, maintainability problems, and violations of confirmed project rules.
 
 ## 2. Review workflow
 
-1. Receive a GitHub PR webhook.
-2. Verify webhook signature and deduplicate delivery.
-3. Read PR base SHA and head SHA.
+1. An input adapter creates a normalized review request: local base plus local changes, or a GitHub PR base/head pair.
+2. Identify and freeze the exact source snapshot; local dirty worktrees need a content identity in addition to any Git commit SHA.
+3. For GitHub, verify webhook signatures, deduplicate delivery, and confirm the requested head SHA.
 4. Confirm a project snapshot/profile exists for the repository.
-5. Fetch changed files and patches.
+5. Obtain changed files and patches from the adapter.
 6. Map changed lines to symbols and modules.
 7. Retrieve related callers, dependencies, tests, configuration, and approved knowledge.
 8. Run deterministic checks and supported analyzers.
 9. Ask the AI investigator to inspect bounded questions.
-10. Validate each proposed finding against exact source at the target head SHA.
-11. Apply severity, confidence, and publication policy.
-12. Publish inline comments or a review summary.
-13. Persist the review and finding lifecycle.
-14. Re-run when the PR head changes.
+10. Validate each proposed finding against exact source in the frozen review snapshot.
+11. Apply severity, confidence, and output policy.
+12. Emit a structured local report or publish GitHub inline comments/review summary.
+13. Persist the review and finding lifecycle when persistence is available.
+14. Re-run when the local change set or PR head changes.
 
 ## 3. What to inspect
 
@@ -74,7 +74,7 @@ A finding should include:
       "filePath": "app/services/payment_capture.rb",
       "startLine": 42,
       "endLine": 48,
-      "commitSha": "EXACT_HEAD_SHA"
+      "snapshotId": "EXACT_REVIEW_SNAPSHOT_ID"
     }
   ],
   "suggestedFix": "Use an idempotency key for the capture operation."
@@ -85,9 +85,9 @@ The example is illustrative only. A real finding must be grounded in actual repo
 
 ## 6. Evidence validation
 
-Before publishing:
-- Confirm the file exists at the current head SHA.
-- Confirm the cited lines or symbol still exist.
+Before emitting or publishing:
+- Confirm the file exists in the frozen review snapshot.
+- Confirm the cited lines or symbol still exist in that snapshot.
 - Confirm the code excerpt supports the stated claim.
 - Verify dependency/call relationships where the claim relies on them.
 - Distinguish a definite defect from a possible risk.

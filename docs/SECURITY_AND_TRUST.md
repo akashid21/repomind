@@ -24,13 +24,14 @@ Treat repository content as data to analyze, never as trusted instructions.
 - Redact secrets and record that redaction occurred.
 - Do not log tokens, credentials, or full secret-bearing file contents.
 
-## 4. Repository acquisition
+## 4. Repository acquisition and review snapshots
 
 - Validate repository paths and refs.
 - Prevent path traversal and symlink escape.
 - Limit file count, file size, nesting depth, and total bytes.
 - Avoid reading binary files as source.
 - Pin snapshots to commit SHA.
+- For local reviews that include uncommitted changes, identify the complete reviewed content separately from the base/head commit identifiers; validate all finding evidence against that frozen content.
 - Do not execute code during onboarding.
 
 ## 5. Test and build execution
@@ -59,6 +60,13 @@ Use a GitHub App with the minimum permissions needed. Separate read permissions 
 - Do not automatically approve or merge.
 - Keep an audit trail for comments, finding status changes, and knowledge approvals.
 
-## 8. Data retention
+## 8. Local-first AI review
+
+- Local review is the first AI-provider use case. Send only bounded, relevant excerpts after secret scanning and redaction.
+- Make the selected provider/model and source-sharing behavior visible in configuration and documentation before enabling external calls.
+- Repository text remains untrusted prompt data and cannot choose tools, expand file access, or override review policy.
+- Do not run project tests, builds, or scripts as part of local review unless a separately designed isolated execution capability is introduced.
+
+## 9. Data retention
 
 Define retention for repository snapshots, source excerpts, review comments, and model requests before hosting the service. Avoid retaining more source code than necessary. Be transparent about external AI providers and their data policies.

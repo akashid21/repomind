@@ -5,7 +5,7 @@
 
 ## 1. Overview
 
-RepoMind is a universal, repository-aware AI code reviewer. It first builds a structured understanding of a software repository, then uses that project context to review GitHub pull requests.
+RepoMind is a universal, repository-aware AI code reviewer. It first builds a structured understanding of a software repository, then reviews code changes using that context. The initial review workflow runs locally; GitHub later supplies pull-request changes and receives validated findings through the same review core.
 
 The product should investigate more than changed lines. It should identify relevant modules, symbols, dependencies, conventions, business rules, and possible downstream effects before deciding whether a change introduces a defect or violates an established rule.
 
@@ -30,16 +30,15 @@ The goal is not to claim perfect understanding of every language. RepoMind's cor
 
 - Initial user: one developer.
 - Initial deployment: personal tool.
-- Initial repository: one GitHub repository.
-- Validation pilot: a friend's Ruby on Rails + React POS application. This repository is a test case, not the product's supported-stack boundary or the sole driver of architecture.
-- Initial PR platform: GitHub.
-- Initial usage: manual/automated PR review with comments and review status.
+- Initial repository: a friend's Ruby on Rails + React POS application, reviewed locally first. This repository is a test case, not the product's supported-stack boundary or the sole driver of architecture.
+- First planned PR platform: GitHub, after the local review core is validated.
+- Initial usage: local review during development, followed by manual/automated GitHub PR review with comments and review status.
 - No multi-tenant SaaS, billing, organization administration, or public marketplace in the MVP.
 
 ## 5. Product principles
 
 1. **Repository-aware:** understand the project before reviewing a PR.
-2. **Evidence-led:** every actionable finding must point to exact source evidence.
+2. **Evidence-led:** every actionable finding must point to exact source evidence from the reviewed snapshot.
 3. **Conservative:** prefer fewer high-confidence findings over noisy speculation.
 4. **Technology-extensible:** common interfaces with language-specific analyzers.
 5. **Incremental:** update knowledge when commits change relevant files.
@@ -89,19 +88,26 @@ This is a staged starting set, not a permanent limit. Additional technologies sh
 - Persist a project profile tied to the analyzed commit.
 - Allow a developer to correct or confirm important project knowledge.
 
-### 7.2 PR review
+### 7.2 Code review
 
-- Receive GitHub PR webhook events.
-- Fetch base and head commit information and the changed-file diff.
+- Review local changes before GitHub integration, with an explicit comparison base and a well-defined snapshot of committed and optional working-tree changes.
 - Retrieve relevant project knowledge and related source code.
 - Analyze changed code and likely impact paths.
 - Use deterministic checks and language analyzers where available.
-- Ask an AI model to investigate bounded questions using repository tools.
-- Publish findings as GitHub review comments.
+- Ask an AI model to investigate bounded questions using repository evidence.
+- Validate findings against the exact reviewed snapshot.
+- Clearly report analysis gaps and do not claim tests ran unless they actually ran.
+
+### 7.3 GitHub PR review
+
+- Receive GitHub PR webhook events.
+- Fetch base and head commit information and the changed-file diff.
+- Pass the PR changes through the shared review core used by local review.
+- Publish validated findings as GitHub review comments.
 - Optionally request changes when configured policy and severity justify it.
 - Never approve or merge automatically.
 
-### 7.3 Review findings
+### 7.4 Review findings
 
 Each finding should include:
 - Stable finding ID.
@@ -114,7 +120,7 @@ Each finding should include:
 - Why the issue matters and a suggested fix.
 - Status and review history.
 
-### 7.4 Re-review after new commits
+### 7.5 Re-review after new commits
 
 - Reassess existing findings after a new PR head commit.
 - Determine whether each finding is still present, resolved, reintroduced, or no longer verifiable.
@@ -122,7 +128,7 @@ Each finding should include:
 - Do not mark a finding resolved merely because its line moved or its text changed.
 - Re-check the exact current source and relevant behavior.
 
-### 7.5 Developer feedback
+### 7.6 Developer feedback
 
 - Capture author replies and reviewer discussions.
 - Associate replies with findings when possible.

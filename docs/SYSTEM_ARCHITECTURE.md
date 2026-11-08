@@ -8,10 +8,10 @@
 RepoMind is composed of a technology-agnostic orchestration core and replaceable adapters for GitHub, languages, storage, and AI providers.
 
 ```text
-GitHub App / Local CLI
+Local Review CLI / GitHub App
         |
         v
-API + Webhook Receiver
+Local Review Orchestrator / API + Webhook Receiver
         |
         v
 Job Orchestrator / Queue
@@ -55,7 +55,7 @@ Project Knowledge          Findings + Reassessment
 | Retrieval | PostgreSQL queries first; pgvector optional | Do not start with a separate vector database |
 | Isolation | Docker or equivalent sandbox | Required before executing repo code/tests |
 
-A local CLI can be used before building a full GitHub App. It should call the same onboarding services as the future API.
+A local CLI is the first review entry point and should call the same onboarding and review services as the future GitHub integration. GitHub is an adapter for PR acquisition and finding publication; core review decisions and evidence validation must not depend on GitHub APIs.
 
 ### Milestone 0 foundation choices
 
@@ -95,12 +95,16 @@ A local CLI can be used before building a full GitHub App. It should call the sa
 Detection rules and analyzers are separate extension points. Adding a known file extension, manifest, or configuration indicator should normally be a rule and fixture change. Adding symbol extraction or language-specific checks requires an analyzer adapter. Neither extension changes the shared onboarding/review workflow. Rule data remains controlled and versioned by RepoMind; loading arbitrary repository-supplied or remote rules is out of scope until validation and trust controls are designed.
 
 ### 3.4 Review orchestrator
-- Parse PR diff.
+- Accept a normalized review request from local and GitHub adapters.
+- Bind each run to an immutable repository snapshot; for local dirty worktrees, record a content identity for the reviewed state in addition to Git commit identifiers.
+- Normalize the requested change set and diff.
 - Retrieve affected symbols, callers, dependencies, tests, and relevant project rules.
 - Run deterministic checks.
 - Ask the model to investigate a bounded task.
 - Validate evidence and finding structure.
 - Publish only findings that pass validation and policy.
+
+Local review emits a structured report instead of publishing comments. GitHub integration later maps the same validated findings to review comments and verifies the PR head is still current.
 
 ### 3.5 Feedback and knowledge service
 - Capture developer discussion.
@@ -195,7 +199,7 @@ Start locally:
 - Mock GitHub publishing during development.
 
 Then add:
-- GitHub App and webhook endpoint.
+- GitHub App and webhook endpoint using the shared review core.
 - Redis/BullMQ workers.
 - Isolated test execution service.
 - Hosted deployment only when local usage is reliable.

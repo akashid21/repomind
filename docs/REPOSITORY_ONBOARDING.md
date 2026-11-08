@@ -16,6 +16,7 @@ Onboarding builds a structured, evidence-backed profile of a repository before R
 6. Infer architecture and business domains.
 7. Generate a persistent project knowledge profile.
 8. Update the profile incrementally as commits change.
+9. Review local changes with the shared review core before adding GitHub acquisition and publishing.
 
 Each stage should be observable, retryable, and tied to a repository commit SHA.
 
@@ -223,7 +224,7 @@ Use a job key such as project ID + commit SHA + stage for idempotency.
 - Redact secrets before any external AI request.
 - Keep source excerpts bounded and relevant.
 
-## 12. First implementation milestone
+## 12. Implementation order
 
 Build in this order:
 1. Local directory input.
@@ -233,4 +234,6 @@ Build in this order:
 5. Shared analyzer adapter contract and an initial cross-stack analyzer set selected from the documented support matrix.
 6. Basic module discovery.
 
-Only after this works should GitHub App onboarding and AI-assisted domain discovery be added.
+After repository structure and project understanding work, implement local AI-assisted code review using a frozen local change snapshot. Define snapshot identity carefully: a Git commit SHA alone does not identify uncommitted working-tree changes. Only after the local review core produces validated, evidence-backed reports should GitHub PR acquisition and comment publishing be added as adapters around that same core.
+
+GitHub-specific behavior (webhooks, delivery deduplication, stale-head checks, and comment publication) belongs at the adapter boundary. It must not fork review reasoning or evidence validation.

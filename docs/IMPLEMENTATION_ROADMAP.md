@@ -1,11 +1,11 @@
 # RepoMind Implementation Roadmap
 
-**Version:** 1.1
+**Version:** 1.2
 **Approach:** build a useful vertical slice, then expand
 
 ## Guiding rule
 
-Do not build the whole platform at once. Start with local repository understanding, then add PR review, GitHub integration, and feedback learning.
+Do not build the whole platform at once. Start with local repository understanding, prove the core review workflow on local changes, then add GitHub integration and feedback learning.
 
 Build one stack-neutral workflow. Technology-specific behavior belongs in controlled detection rules and replaceable analyzers, not in orchestration, project-profile, review, or feedback flows. Track detection and deep-analysis coverage separately. The Rails + React POS repository is a validation pilot; it must not be treated as the only supported stack or as the architecture's organizing assumption. Validate the workflow with additional representative repositories as coverage grows.
 
@@ -65,7 +65,20 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 
 **Acceptance:** project profile is reviewable and does not present unsupported inferences as confirmed facts.
 
-## Milestone 5 — GitHub integration
+## Milestone 5 — Local AI-assisted code review
+
+- Accept a local repository and an explicit comparison base (commit or branch) through a CLI.
+- Capture and identify the exact review snapshot, including working-tree changes when requested.
+- Select bounded changed-code context plus relevant symbols, dependencies, tests, and confirmed project knowledge.
+- Run deterministic checks and supported analyzers before AI investigation.
+- Add a replaceable AI provider adapter for bounded, evidence-seeking investigation.
+- Validate structured findings against the exact local snapshot and emit a stable review report.
+
+**Acceptance:** a developer can run a local review over a supported fixture and the Rails + React pilot, receive a stable structured report with evidence-backed findings, see unsupported-analysis gaps, and verify that repository code is never executed and secrets are not sent to providers. The review core must have no GitHub dependency so the later GitHub milestone can reuse it.
+
+**Status:** Planned. This milestone is the first end-to-end test of RepoMind's main code-review goal; M5 tickets are defined in `MILESTONE_TICKETS.md`.
+
+## Milestone 6 — GitHub integration
 
 - Create GitHub App.
 - Connect one repository.
@@ -73,20 +86,9 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 - Receive PR webhooks.
 - Deduplicate webhook deliveries.
 - Persist PR metadata and changed-file diffs.
+- Adapt GitHub PR input and comment publishing to the shared review core from M5.
 
-**Acceptance:** a test PR creates a review job for the correct head SHA.
-
-## Milestone 6 — First PR reviewer
-
-- Retrieve changed symbols and related code.
-- Add deterministic checks.
-- Add AI provider adapter.
-- Generate structured findings.
-- Validate evidence against exact head commit.
-- Publish GitHub review comments.
-- Prevent stale publishing.
-
-**Acceptance:** reviewer produces evidence-backed comments on PRs from supported and partially supported stacks, identifies analysis gaps, and does not invent test results.
+**Acceptance:** a test PR creates an idempotent review job for the correct base and head SHAs, reuses the local review core, and publishes only validated findings against the current head.
 
 ## Milestone 7 — Finding lifecycle and developer feedback
 
@@ -103,7 +105,6 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 
 - Add isolated test execution only after sandbox design.
 - Improve quality metrics and false-positive tracking.
-- Add Python or another analyzer based on real demand.
 - Add incremental indexing.
 - Evaluate local and hosted model providers.
 - Add monitoring and cost controls.
@@ -112,7 +113,7 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 
 ## Initial implementation task
 
-The first implementation task was Milestone 1: a local repository inventory CLI that emits JSON. It is complete. Proceed milestone by milestone; Milestone 2 is the next planned work.
+Milestones 1 and 2 are complete. M3 and M4 build repository understanding; M5 exercises local AI-assisted review before M6 adds GitHub acquisition and publishing. Proceed milestone by milestone.
 
 Milestone work is tracked as sub-tickets in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md). Use its ticket format when planning each milestone; tickets are created only for milestones selected for upcoming work. M2's remaining tickets were revised on 2026-11-08 to set a representative cross-stack detection baseline and distinguish detection from deep analyzer support.
 
@@ -129,6 +130,7 @@ Record significant decisions here using:
 | 2026-11-07 | Break Milestone 2 into seven reviewable tickets before implementation | Specify evidence and safety contracts first, then build small detector groups and a stable profile output | Initial detector rules were a narrow first slice; the M2 plan is being broadened to a documented cross-stack baseline without changing evidence-only semantics |
 | 2026-11-07 | Define technology profile v1 as repository evidence, with bounded reads of `package.json` and literal `Gemfile` declarations | Keep repository content inert and limit exposure while beginning with selected manifest formats | Profile claims cite relative evidence paths and confidence; runtime usage is never inferred, and each additional manifest requires a documented parser and safety rule |
 | 2026-11-08 | Keep product workflow stack-neutral and treat Rails + React as a validation pilot | Make RepoMind useful across repository stacks while using the available POS project for end-to-end experimentation | Detection coverage and deep analyzer coverage are separate; future M2/M3 work must validate representative non-pilot stacks and report unsupported areas |
+| 2026-11-08 | Validate the review core locally before integrating GitHub | Test the product's main code-review value with faster local iteration and fewer platform dependencies | M5 provides local diff review and a reusable input/output core; M6 adapts GitHub PRs and publishing to that core |
 | TBD | Start with local inventory before GitHub App | Faster feedback and simpler debugging | GitHub acquisition comes later |
 | TBD | PostgreSQL as primary store | Durable relational records and queryable review history | Vector search remains optional |
 | TBD | Feedback creates curated project knowledge, not model retraining | Safer, auditable, repository-scoped learning | Human approval in MVP |

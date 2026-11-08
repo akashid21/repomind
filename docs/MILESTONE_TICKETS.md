@@ -171,3 +171,62 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 - **Acceptance criteria:** Unit tests cover supported rule sets and reader limit/failure outcomes; subprocess tests prove claims are evidence-backed, unsupported and absent signals are omitted, malformed inputs produce documented partial profiles, fatal errors emit no JSON, repeated output is stable, secret values and absolute paths are omitted, and fixture scripts are never run. Both pilot and non-pilot profiles pass without narrowing product scope.
 - **Security and data integrity:** Fixtures confirm secret values and absolute paths are not emitted; tests never install dependencies or execute repository scripts.
 - **Documentation:** Update `README.md`, `docs/REPOSITORY_ONBOARDING.md`, `docs/TECHNOLOGY_DETECTION_CONTRACT.md`, and `docs/IMPLEMENTATION_ROADMAP.md` as needed.
+
+## Milestone 5 — Local AI-assisted code review
+
+These tickets implement a local review workflow to validate RepoMind's core value before GitHub integration. The review core accepts normalized changes and repository evidence; a local CLI is the first adapter. It must produce findings grounded in the exact frozen review snapshot, keep repository code inert, and report unsupported analysis. GitHub acquisition and publishing belong to M6 and must reuse this core.
+
+### M5-01: Specify local review input and snapshot identity
+
+- **Status:** Not started
+- **Goal:** Define the local review CLI contract, change selection, snapshot identity, and report format.
+- **Scope:** Specify base/ref handling, committed and optional working-tree changes, untracked files, review snapshot identity, finding evidence fields, output ordering, failure/partial behavior, and bounded input/context limits.
+- **Out of scope:** AI provider implementation, GitHub integration, persistence, and running repository tests or scripts.
+- **Dependencies:** M3 and M4
+- **Acceptance criteria:** A local review contract documents CLI inputs/outputs and establishes an immutable identity for every reviewed file state, including uncommitted changes; findings refer to the exact snapshot and use repository-relative paths and valid source ranges.
+- **Security and data integrity:** Define secret exclusions/redaction, safe diff capture, path containment, symlink handling, and how untrusted repository text is isolated from trusted instructions.
+- **Documentation:** `docs/PR_REVIEW_ENGINE.md`, `docs/SECURITY_AND_TRUST.md`, and a local review contract linked from onboarding.
+
+### M5-02: Build normalized local change and context selection
+
+- **Status:** Not started
+- **Goal:** Turn a local comparison into a bounded review request with relevant repository context.
+- **Scope:** Implement explicit base comparison, changed-file/range mapping, and selection of related analyzed symbols, dependencies, tests, and confirmed knowledge; expose unsupported-analysis gaps.
+- **Out of scope:** AI calls, GitHub APIs, publishing, and executing repository tooling.
+- **Dependencies:** M5-01
+- **Acceptance criteria:** Fixture repositories produce deterministic local change requests and bounded evidence packets; dirty and untracked-file behavior follows the contract; unsupported files remain visible without aborting otherwise valid review preparation.
+- **Security and data integrity:** Keep all paths under the selected repository, read only approved bounded content, never follow symlinks, and never execute repository code.
+- **Documentation:** Update the local review contract with implemented selection behavior.
+
+### M5-03: Add a replaceable AI provider adapter
+
+- **Status:** Not started
+- **Goal:** Allow bounded AI investigation without coupling review logic to a provider.
+- **Scope:** Define a small provider interface, implement one selected provider or local-model adapter, construct bounded prompts from approved evidence, and parse structured candidate findings.
+- **Out of scope:** GitHub integration, autonomous tool selection, model training, and unrestricted repository-wide prompting.
+- **Dependencies:** M5-01, M5-02
+- **Acceptance criteria:** Provider behavior is mockable in tests; malformed or refused responses fail safely; requests respect configured token/context bounds and identify provider/model; review orchestration remains provider-neutral.
+- **Security and data integrity:** Redact likely secrets before requests, identify external source sharing, treat repository content as hostile input, and keep credentials out of logs and reports.
+- **Documentation:** Update `docs/PR_REVIEW_ENGINE.md` and `docs/SECURITY_AND_TRUST.md` with provider and data-flow behavior.
+
+### M5-04: Validate findings against the frozen snapshot
+
+- **Status:** Not started
+- **Goal:** Filter AI and deterministic candidates so the report contains only findings supported by exact source evidence.
+- **Scope:** Validate file paths, snapshot identity, source ranges, claim/evidence consistency, finding schema, confidence, and duplicate findings; distinguish omitted or unverifiable candidates.
+- **Out of scope:** GitHub comment placement, lifecycle tracking across commits, and claiming test/build results.
+- **Dependencies:** M5-01, M5-02, M5-03
+- **Acceptance criteria:** Valid candidates cite existing content and line ranges from the frozen snapshot; fabricated paths/ranges, stale snapshot evidence, unsupported test claims, malformed output, and weakly supported claims are rejected or clearly qualified with tests.
+- **Security and data integrity:** Source excerpts are authoritative; model prose cannot create evidence or change policy. Findings must not include secret values.
+- **Documentation:** Document validation and omission semantics in the local review contract and `docs/PR_REVIEW_ENGINE.md`.
+
+### M5-05: Deliver local review CLI and validate the vertical slice
+
+- **Status:** Not started
+- **Goal:** Make the shared review core usable locally and prove the end-to-end review behavior before GitHub work.
+- **Scope:** Add the local CLI, stable structured report, provider configuration, fixture tests with a mocked provider, and pilot/non-pilot validation cases for Rails + React and Node/Express + React; update onboarding usage.
+- **Out of scope:** GitHub App/webhooks/comments, sandboxed test execution, and persistent review history unless required by a documented existing foundation.
+- **Dependencies:** M5-01, M5-02, M5-03, M5-04
+- **Acceptance criteria:** A developer can review a local fixture and pilot repository against an explicit base, inspect stable structured findings with snapshot-backed evidence and analysis gaps, and see clear errors/partial results. Tests prove secrets are redacted, malicious repository instructions do not alter policy, repository scripts are not run, and provider failures do not emit misleading findings.
+- **Security and data integrity:** Local and external provider paths both obey bounded context and redaction rules; no tests, builds, or source scripts run as a side effect.
+- **Documentation:** Update `README.md`, `docs/REPOSITORY_ONBOARDING.md`, `docs/PR_REVIEW_ENGINE.md`, and `docs/IMPLEMENTATION_ROADMAP.md`.

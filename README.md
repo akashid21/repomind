@@ -2,7 +2,7 @@
 
 **Universal, repository-aware AI code reviewer**
 
-RepoMind connects to a software repository, builds an evidence-backed understanding of its structure and conventions, and uses that context to review GitHub pull requests.
+RepoMind builds an evidence-backed understanding of a software repository and reviews changes with that context. The review workflow is validated locally first; GitHub later provides pull-request changes and receives validated findings through the same review core.
 
 ## Documentation map
 
@@ -11,7 +11,7 @@ RepoMind connects to a software repository, builds an evidence-backed understand
 - [`docs/REPOSITORY_ONBOARDING.md`](docs/REPOSITORY_ONBOARDING.md) — repository discovery and persistent project knowledge.
 - [`docs/LOCAL_INVENTORY_CONTRACT.md`](docs/LOCAL_INVENTORY_CONTRACT.md) — local inventory CLI contract, JSON report, exclusions, and safety limits.
 - [`docs/TECHNOLOGY_DETECTION_CONTRACT.md`](docs/TECHNOLOGY_DETECTION_CONTRACT.md) — technology profile schema, evidence rules, and bounded detection inputs.
-- [`docs/PR_REVIEW_ENGINE.md`](docs/PR_REVIEW_ENGINE.md) — PR review workflow, evidence, findings, and re-review.
+- [`docs/PR_REVIEW_ENGINE.md`](docs/PR_REVIEW_ENGINE.md) — local and PR review workflow, evidence, findings, and re-review.
 - [`docs/DEVELOPER_FEEDBACK_AND_LEARNING.md`](docs/DEVELOPER_FEEDBACK_AND_LEARNING.md) — how the reviewer should handle developer replies and learn repository-specific conventions.
 - [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) — staged implementation plan and acceptance criteria.
 - [`docs/SECURITY_AND_TRUST.md`](docs/SECURITY_AND_TRUST.md) — untrusted repository content, sandboxing, secrets, and permissions.
@@ -19,9 +19,9 @@ RepoMind connects to a software repository, builds an evidence-backed understand
 
 ## Product decisions
 
-- Initial use: one developer, one GitHub repository, and a friend's Rails + React POS application as the pilot.
+- Initial use: one developer reviews local changes in the Rails + React POS pilot; GitHub is the first planned PR platform after the local review core is validated.
 - Long-term direction: support arbitrary technology stacks through a technology-agnostic core and language-specific analyzer adapters.
-- Initial PR platform: GitHub.
+- Planned PR platform: GitHub, integrated after local review proves the shared core.
 - Initial product is a personal tool, not a multi-tenant SaaS.
 - The reviewer must be evidence-led and conservative. It must not approve or merge PRs autonomously.
 - Developer feedback can become repository-specific knowledge only after validation and explicit recording.
