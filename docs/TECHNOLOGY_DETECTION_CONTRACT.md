@@ -5,6 +5,8 @@
 
 This document defines the first deterministic technology profile produced from a local repository. It describes evidence found in repository paths and selected declarations. It does not prove that a detected technology is active at runtime.
 
+The detection contract is stack-neutral. A technology's presence in the support matrix means RepoMind has documented detection rules for evidence signals; it does not mean RepoMind has a deep analyzer for that technology. Product support levels and the intended cross-stack baseline are defined in `PRODUCT_REQUIREMENTS.md` and `MILESTONE_TICKETS.md`.
+
 ## Command
 
 The planned command, invoked from the RepoMind project root, is:
@@ -107,7 +109,9 @@ Package-manager evidence comes from these exact basenames, at any inventoried pa
 
 These mappings are maintained as declarative rules separately from detector logic. Extending coverage requires adding a rule and tests, and documenting the evidence semantics here. The detector does not discover arbitrary new technologies automatically.
 
-The detector merges duplicate claims and evidence and sorts technologies and evidence with ordinal code-point ordering. Its output is a detector result for later profile assembly; M2-06 owns the public CLI and complete profile serialization.
+The detector merges duplicate claims and evidence and sorts technologies and evidence with ordinal code-point ordering. Its output is a detector result for later profile assembly; M2-07 owns the public CLI and complete profile serialization.
+
+The currently implemented M2-03 rule set is an initial slice: Ruby, JavaScript, and TypeScript extensions, plus the documented npm/Yarn/pnpm/Bun/Bundler markers. M2-04 expands the detection baseline to Python, Java, Go, PHP, and C#/.NET, including supported ecosystem manifests and package managers. M2-05 adds representative framework and test-tool rules across backend and frontend ecosystems. These additions remain controlled, versioned rules with fixtures; this plan does not imply exhaustive ecosystem coverage.
 
 Detectors consume M1's filtered inventory. They may inspect paths and file metadata without opening file contents. Content reads are limited to explicit, non-secret manifest formats needed for declarations:
 
@@ -140,9 +144,9 @@ Only files present in the completed M1 inventory are eligible. Readers must reso
 
 ## Known limits for schema v1
 
-- The initial detector set prioritizes the pilot's Ruby/Rails and JavaScript/TypeScript/React stack, then narrowly documented package-manager, test-tool, database, and infrastructure indicators.
+- The current implementation is a narrow first slice, not the product support boundary. The planned M2 baseline covers representative backend, frontend, package-manager, database, test-tool, and infrastructure evidence across multiple stacks.
 - Language recognition is extension-based; content sniffing for arbitrary source files is out of scope.
-- M2-03 currently recognizes only Ruby, JavaScript, and TypeScript extensions and the explicitly listed package-manager markers; other languages and manager lockfiles are not claimed yet.
+- Until M2-04 is complete, the implemented language detector recognizes only Ruby, JavaScript, and TypeScript extensions and the explicitly listed package-manager markers; other languages and manager lockfiles are not yet claimed by code.
 - Manifest support is intentionally narrow. An unrecognized manifest, dependency alias, generated source file, or dynamic declaration may be missed.
 - A successful profile is not proof that all repository technologies were identified. Warnings and confidence qualify the evidence collected.
 - There is no persistence, incremental detection, runtime observation, code structure analysis, or AI inference in this milestone.

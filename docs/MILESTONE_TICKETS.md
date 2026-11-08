@@ -82,7 +82,7 @@ These tickets together implement only the Milestone 1 scope in `IMPLEMENTATION_R
 
 ## Milestone 2 — Deterministic Technology Detection
 
-These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md`: detect technology hints from the M1 inventory and selected repository manifests/configuration, attach evidence and confidence, and emit a stable technology profile. Detection is deterministic; repository code and scripts are never executed.
+These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md`: detect technology hints across representative common repository stacks from the M1 inventory and selected repository manifests/configuration, attach evidence and confidence, and emit a stable technology profile. Detection is deterministic; repository code and scripts are never executed. The Rails + React project is one validation fixture, not the scope boundary. Detection support does not imply AST analysis or runtime use.
 
 ### M2-01: Specify the technology profile and detection contract
 
@@ -117,46 +117,57 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 - **Security and data integrity:** Use paths and bounded metadata/manifest parsing only; do not install packages or execute scripts.
 - **Documentation:** Document supported extensions, manifests, lockfiles, and known blind spots in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
 
-### M2-04: Detect frameworks and test tools
+### M2-04: Expand baseline detection across representative stacks
 
 - **Status:** Not started
-- **Goal:** Identify configured framework and test-tool hints from supported manifests and configuration files.
-- **Scope:** Add deterministic rules for the pilot stack and initial manifest/config indicators, including Rails, React, and common test-tool declarations; report each claim with evidence, confidence, and detection method.
-- **Out of scope:** Proving runtime use, analyzing application architecture, executing tests, or broad exhaustive ecosystem coverage.
+- **Goal:** Recognize common languages and package managers beyond the initial Ruby and JavaScript/TypeScript rule set.
+- **Scope:** Extend declarative rule tables and bounded readers to cover a representative baseline for Python, Java, Go, PHP, and C#/.NET alongside existing Ruby, JavaScript, and TypeScript. Include ecosystem-specific manifest and lockfile markers where safely supported. Keep rules separate from detector control flow.
+- **Out of scope:** Exhaustive language coverage, source-content sniffing, framework detection, AST analysis, and claims about runtime use.
 - **Dependencies:** M2-01, M2-02, M2-03
-- **Acceptance criteria:** Fixtures identify the documented Rails/React and test-tool indicators when configured; absent, malformed, or conflicting evidence is represented conservatively and does not become an unsupported certainty.
-- **Security and data integrity:** Parse allowlisted files as data only; never run package managers, tests, or repository-defined commands.
-- **Documentation:** Update supported framework/tool evidence rules and limitations in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
+- **Acceptance criteria:** Fixtures detect each documented language and package-manager rule, preserve polyglot repositories, cite paths, and ignore absent, malformed, or unknown declarations without inventing claims. Adding a supported mapping does not require changing generic detector control flow.
+- **Security and data integrity:** Add manifest formats to the explicit allowlist with bounded non-evaluating parsers; never run package managers, tests, or repository-defined commands.
+- **Documentation:** Update the cross-stack language/package-manager support table and known blind spots in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
 
-### M2-05: Detect database and infrastructure hints
+### M2-05: Detect frameworks and test tools across stacks
 
 - **Status:** Not started
-- **Goal:** Report database and infrastructure technologies indicated by manifests and configuration paths.
-- **Scope:** Add a bounded initial rule set for database clients/configuration and infrastructure indicators such as Docker, Compose, Terraform, and Kubernetes; include path-backed evidence and confidence.
+- **Goal:** Identify configured framework and test-tool hints for representative backend and frontend ecosystems.
+- **Scope:** Add declarative dependency/configuration rules for the documented initial set, including Rails, Express/NestJS, Django/FastAPI, Spring, ASP.NET, Laravel, React/Next.js, Angular, Vue, and Svelte, plus representative test tools such as RSpec, Minitest, Jest, Vitest, Playwright, and Cypress.
+- **Out of scope:** Proving runtime use, analyzing architecture, executing tests, and exhaustive ecosystem coverage.
+- **Dependencies:** M2-01, M2-02, M2-04
+- **Acceptance criteria:** Fixtures cover documented indicators from more than the pilot stack; multiple or conflicting signals remain evidence-backed and qualified; absent or malformed evidence does not become an unsupported claim.
+- **Security and data integrity:** Parse allowlisted files as data only; do not execute package scripts or repository-defined commands.
+- **Documentation:** Update framework/test-tool rules, evidence semantics, and coverage limits in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
+
+### M2-06: Detect database and infrastructure hints
+
+- **Status:** Not started
+- **Goal:** Report evidence-backed database and infrastructure hints across common stacks.
+- **Scope:** Add declarative rules for representative database clients/configuration and Docker, Compose, Terraform, Kubernetes, and cloud configuration markers.
 - **Out of scope:** Connecting to databases or cloud services, validating deployment behavior, inspecting runtime state, and architecture inference.
-- **Dependencies:** M2-01, M2-02
-- **Acceptance criteria:** Fixtures detect documented database and infrastructure hints from supported files; unknown or incomplete hints remain qualified rather than being promoted to confirmed runtime facts.
+- **Dependencies:** M2-01, M2-02, M2-04
+- **Acceptance criteria:** Fixtures detect documented hints across more than one stack; unknown or incomplete evidence remains qualified and path-backed.
 - **Security and data integrity:** Never load `.env` values, credentials, or cloud secrets; parse only allowlisted non-secret configuration and do not contact external systems.
 - **Documentation:** Record supported indicators, secret exclusions, and limitations in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
 
-### M2-06: Emit a stable technology profile
+### M2-07: Emit a stable technology profile
 
 - **Status:** Not started
 - **Goal:** Provide a CLI entry point that emits the combined technology profile as deterministic JSON.
 - **Scope:** Connect the M1 inventory, bounded readers, and detectors; serialize schema-versioned output with stable ordering and clear failure behavior.
 - **Out of scope:** Database storage, API endpoints, incremental indexing, and changes to the M1 inventory JSON schema.
-- **Dependencies:** M2-03, M2-04, M2-05
+- **Dependencies:** M2-03, M2-04, M2-05, M2-06
 - **Acceptance criteria:** The documented CLI accepts one repository path, emits only valid stable JSON on success, keeps diagnostics on stderr, and exits nonzero without partial JSON on fatal errors; repeated runs over unchanged fixtures produce byte-for-byte identical output.
 - **Security and data integrity:** Reuse M1 root validation and traversal safeguards; profile contains no absolute local paths, source contents, secret values, or unsubstantiated claims.
 - **Documentation:** Document CLI use and profile examples in `README.md` and `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
 
-### M2-07: Test technology detection and close out documentation
+### M2-08: Test cross-stack detection and close out documentation
 
 - **Status:** Not started
-- **Goal:** Verify supported detection rules, evidence quality, stable profile output, and safety behavior.
-- **Scope:** Add isolated fixtures for supported and unsupported signals, missing/malformed/oversized manifests, conflicting evidence, stable output, and secret-like values; document setup, usage, supported scope, and limitations.
+- **Goal:** Verify detection coverage, evidence quality, stable profile output, and safety across representative stacks.
+- **Scope:** Add isolated fixtures for each documented supported stack and category, unsupported signals, missing/malformed/oversized manifests, conflicting evidence, stable output, and secret-like values; validate the profile against the Rails + React pilot and at least one non-pilot stack fixture.
 - **Out of scope:** Detection features reserved for later milestones, repository code execution, and persistence.
-- **Dependencies:** M2-02, M2-03, M2-04, M2-05, M2-06
-- **Acceptance criteria:** Tests prove technology claims are evidence-backed, uncertain or absent signals are not overstated, malformed inputs are handled as specified, outputs are stable, and fixture scripts are never run; Milestone 2 acceptance can be checked against the pilot profile.
+- **Dependencies:** M2-02, M2-03, M2-04, M2-05, M2-06, M2-07
+- **Acceptance criteria:** Tests prove technology claims are evidence-backed, uncertain or absent signals are not overstated, malformed inputs are handled as specified, outputs are stable, fixture scripts are never run, and pilot validation does not narrow the product contract.
 - **Security and data integrity:** Fixtures confirm secret values and absolute paths are not emitted; tests never install dependencies or execute repository scripts.
 - **Documentation:** Update `README.md`, `docs/REPOSITORY_ONBOARDING.md`, `docs/TECHNOLOGY_DETECTION_CONTRACT.md`, and `docs/IMPLEMENTATION_ROADMAP.md` as needed.

@@ -49,9 +49,8 @@ Project Knowledge          Findings + Reassessment
 | Database | PostgreSQL | Durable project, snapshot, review, and feedback records |
 | ORM | Prisma or Drizzle | Choose one after a small schema spike; do not mix |
 | Queue | BullMQ + Redis | Add when background processing is needed |
-| Ruby parsing | Prism | Ruby AST and source locations |
-| TypeScript/JS | TypeScript Compiler API | Symbols, imports, exports, and references |
-| Other languages | Tree-sitter adapters | Expand incrementally |
+| Language analysis | Analyzer adapter registry | Selects a supported parser/analyzer per file or language; unsupported files remain inventoried and are reported as unsupported |
+| Parser implementations | Technology-specific adapters (for example, Prism, TypeScript Compiler API, or Tree-sitter) | Add only behind the shared analyzer contract and support matrix |
 | AI | Provider abstraction | Start with a free-tier provider or local Ollama model |
 | Retrieval | PostgreSQL queries first; pgvector optional | Do not start with a separate vector database |
 | Isolation | Docker or equivalent sandbox | Required before executing repo code/tests |
@@ -86,12 +85,14 @@ A local CLI can be used before building a full GitHub App. It should call the sa
 
 ### 3.3 Repository intelligence
 - File inventory.
-- Technology detection.
-- Language-specific AST extraction.
+- Stack-neutral technology detection through versioned declarative rules.
+- Language-specific AST extraction through replaceable adapters.
 - Symbol and dependency graph.
 - Module and architecture discovery.
 - Business domain discovery.
 - Project knowledge profile.
+
+Detection rules and analyzers are separate extension points. Adding a known file extension, manifest, or configuration indicator should normally be a rule and fixture change. Adding symbol extraction or language-specific checks requires an analyzer adapter. Neither extension changes the shared onboarding/review workflow. Rule data remains controlled and versioned by RepoMind; loading arbitrary repository-supplied or remote rules is out of scope until validation and trust controls are designed.
 
 ### 3.4 Review orchestrator
 - Parse PR diff.

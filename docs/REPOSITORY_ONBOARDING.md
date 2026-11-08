@@ -4,7 +4,7 @@
 
 ## 1. Purpose
 
-Onboarding builds a structured, evidence-backed profile of a repository before RepoMind reviews PRs. The engine must be technology-agnostic at its core and use language-specific analyzer plugins for deeper code understanding.
+Onboarding builds a structured, evidence-backed profile of a repository before RepoMind reviews PRs. Every repository follows the same technology-agnostic inventory, detection, understanding, review, and feedback workflow. Language/framework adapters provide deeper code understanding where available. The Rails + React POS repository is a validation pilot, not a product-specific architecture assumption.
 
 ## 2. Pipeline
 
@@ -100,11 +100,7 @@ Extract where supported:
 - routes and API handlers
 - source line and column ranges
 
-Initial priority:
-- P0: Ruby with Prism; JavaScript/TypeScript with TypeScript Compiler API.
-- P1: Python.
-- P2: Java and Go.
-- Generic fallback: file inventory, manifests, and text-level references.
+Support is reported in explicit levels: inventoried, detected, and analyzed. Detection coverage and analyzer coverage are tracked separately. An unsupported language still participates in safe inventory and generic evidence-based review, while RepoMind reports where specialized analysis is unavailable. The initial analyzer targets are Ruby, JavaScript/TypeScript, and Python; they are validated across Rails + React, Node/Express + React, and Python fixtures/repositories. The pilot does not dictate the shared interfaces.
 
 ## 6. Module and architecture discovery
 
@@ -226,7 +222,7 @@ Build in this order:
 2. Safe file inventory.
 3. Deterministic technology detection.
 4. JSON technology profile.
-5. Ruby and TypeScript/JavaScript analyzer adapters.
+5. Shared analyzer adapter contract and an initial cross-stack analyzer set selected from the documented support matrix.
 6. Basic module discovery.
 
 Only after this works should GitHub App onboarding and AI-assisted domain discovery be added.

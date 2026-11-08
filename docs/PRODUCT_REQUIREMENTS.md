@@ -1,6 +1,6 @@
 # Product Requirements — RepoMind
 
-**Version:** 1.2  
+**Version:** 1.3
 **Status:** Initial product definition
 
 ## 1. Overview
@@ -22,16 +22,16 @@ A generic AI reviewer may also produce plausible but incorrect comments when it 
 
 ## 3. Vision
 
-> Connect RepoMind to a supported software repository. Let it understand the project first. Then let it review code with the context of the entire application.
+> Connect RepoMind to a software repository across technology stacks. Let it understand the project first. Then let it review code with the context of the entire application.
 
-The goal is not to claim perfect understanding of every language. The goal is an extensible platform whose core workflow is technology-agnostic and whose language support grows through analyzer adapters.
+The goal is not to claim perfect understanding of every language. RepoMind's core workflow must be technology-agnostic: inventory, evidence-backed technology profiling, project understanding, review, and developer feedback must work independently of a particular framework. Detection and analysis coverage will grow through declarative rules and replaceable analyzer adapters. Support claims must distinguish basic detection from deeper code analysis.
 
 ## 4. Initial user and pilot
 
 - Initial user: one developer.
 - Initial deployment: personal tool.
 - Initial repository: one GitHub repository.
-- Pilot application: a friend's Ruby on Rails + React POS application.
+- Validation pilot: a friend's Ruby on Rails + React POS application. This repository is a test case, not the product's supported-stack boundary or the sole driver of architecture.
 - Initial PR platform: GitHub.
 - Initial usage: manual/automated PR review with comments and review status.
 - No multi-tenant SaaS, billing, organization administration, or public marketplace in the MVP.
@@ -58,7 +58,23 @@ The design should allow adapters for:
 - Infrastructure: Docker, Kubernetes, Terraform, AWS, Azure.
 - Tests and quality: RSpec, Minitest, Jest, Vitest, Playwright, Cypress, language-specific linters.
 
-This is a compatibility target, not a promise that all technologies are deeply analyzed in the first release. The first useful implementation should prioritize the pilot's Ruby and TypeScript/JavaScript code.
+This is a compatibility direction, not a promise that every technology is deeply analyzed in the first release. Initial detection should cover representative technologies across these families rather than only the pilot stack. Deeper analysis will be added through language/framework adapters and must be explicitly listed as supported. The pilot is used to validate the end-to-end workflow while additional fixtures and repositories validate stack neutrality.
+
+### Support levels
+
+- **Inventoried:** files and paths are collected safely, regardless of language.
+- **Detected:** recognized language, framework, package-manager, database, or infrastructure evidence is reported with paths and confidence.
+- **Analyzed:** a supported adapter extracts structures or performs technology-specific checks.
+- **Reviewed:** the general review workflow can use available evidence and clearly state analysis gaps; a repository is not excluded merely because some files lack a specialized analyzer.
+
+RepoMind must not imply that detection means deep analysis or runtime use. Unsupported or partially supported technologies remain visible as unknown/limited coverage rather than being silently treated as supported.
+
+| Planned stage | Initial coverage target |
+|---|---|
+| M2 detection baseline | Ruby, JavaScript/TypeScript, Python, Java, Go, PHP, and C#/.NET; representative frameworks, package managers, test tools, databases, and infrastructure from the supported technology direction above |
+| M3 deeper code analysis | Ruby, JavaScript/TypeScript, and Python analyzer adapters behind one shared interface; other detected languages remain inventoried and available to generic review with explicit analysis-gap reporting |
+
+This is a staged starting set, not a permanent limit. Additional technologies should be prioritized from real repository needs and added through detector rules or analyzer adapters with fixtures. The first end-to-end validation targets include both the Rails + React pilot and a Node/Express + React fixture/repository.
 
 ## 7. Functional requirements
 
@@ -133,7 +149,7 @@ Each finding should include:
 - Local repository ingestion for early development.
 - GitHub repository snapshot acquisition.
 - File inventory and deterministic technology detection.
-- Initial Ruby and TypeScript/JavaScript analysis.
+- Extensible analyzer interfaces and a documented initial support matrix spanning representative backend, frontend, and other common ecosystems.
 - Basic module and dependency mapping.
 - Persistent project profile.
 - PR diff review with relevant context retrieval.
@@ -156,7 +172,7 @@ Each finding should include:
 ## 10. Success criteria
 
 The MVP is useful when it can:
-1. Analyze the pilot repository at a known commit.
+1. Analyze repositories from different technology stacks at known commits, including the pilot repository.
 2. Produce a technology and module profile with evidence.
 3. Review a PR using changed files plus relevant surrounding code.
 4. Publish a small number of useful, reproducible findings.
