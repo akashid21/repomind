@@ -93,7 +93,7 @@ Confidence is assigned by deterministic rules. It is not a probability and must 
 
 ## Initial evidence and input boundaries
 
-### M2-03 language and package-manager rules
+### M2-03/M2-04 language and package-manager rules
 
 The initial language detector uses a declarative, typed extension rule table in `src/technology/detector-rules.ts`:
 
@@ -102,16 +102,21 @@ The initial language detector uses a declarative, typed extension rule table in 
 | Ruby | `.rb`, `.rake`, `.gemspec` |
 | JavaScript | `.js`, `.jsx`, `.mjs`, `.cjs` |
 | TypeScript | `.ts`, `.tsx`, `.mts`, `.cts` |
+| Python | `.py`, `.pyi`, `.pyw` |
+| Java | `.java` |
+| Go | `.go` |
+| PHP | `.php`, `.phtml` |
+| C# | `.cs`, `.csx` |
 
-Each recognized inventoried file contributes high-confidence `file-extension` evidence. Multiple languages are retained. Extension matching is case-insensitive; filenames and package-manager markers are exact and case-sensitive.
+Each recognized inventoried file contributes high-confidence `file-extension` evidence. Multiple languages are retained. Extension matching is case-insensitive; package-manager basenames and suffixes are exact and case-sensitive.
 
-Package-manager evidence comes from these exact basenames, at any inventoried path: `package-lock.json` or `npm-shrinkwrap.json` (npm), `yarn.lock` (Yarn), `pnpm-lock.yaml` (pnpm), `bun.lock` or `bun.lockb` (Bun), and `Gemfile.lock` (Bundler). These produce high-confidence `lockfile-name` evidence. A supported `package.json` `packageManager` declaration contributes high-confidence `manifest-declaration` evidence only for the recognized `npm`, `yarn`, `pnpm`, or `bun` prefixes. Unknown declaration values are ignored. A generic `package.json` does not identify a package manager.
+Package-manager evidence comes from these exact basenames, at any inventoried path: `package-lock.json` or `npm-shrinkwrap.json` (npm), `yarn.lock` (Yarn), `pnpm-lock.yaml` (pnpm), `bun.lock` or `bun.lockb` (Bun), and `Gemfile.lock` (Bundler); `requirements.txt` (pip-compatible requirements), `Pipfile` (Pipenv), `Pipfile.lock` (Pipenv), `poetry.lock` (Poetry), and `uv.lock` (uv); `pom.xml` (Maven), `build.gradle` or `build.gradle.kts` (Gradle), and `gradle.lockfile` (Gradle); `go.mod` and `go.sum` (Go Modules); `composer.json` and `composer.lock` (Composer); `packages.lock.json` or a project file ending in `.csproj`, `.fsproj`, or `.vbproj` (NuGet). Lockfile names produce high-confidence `lockfile-name` evidence; manager-specific project/manifest names produce high-confidence `manifest-name` evidence. A supported `package.json` `packageManager` declaration contributes high-confidence `manifest-declaration` evidence only for recognized `npm`, `yarn`, `pnpm`, or `bun` prefixes. Unknown declaration values are ignored. A generic `package.json` does not identify a package manager.
 
 These mappings are maintained as declarative rules separately from detector logic. Extending coverage requires adding a rule and tests, and documenting the evidence semantics here. The detector does not discover arbitrary new technologies automatically.
 
 The detector merges duplicate claims and evidence and sorts technologies and evidence with ordinal code-point ordering. Its output is a detector result for later profile assembly; M2-07 owns the public CLI and complete profile serialization.
 
-The currently implemented M2-03 rule set is an initial slice: Ruby, JavaScript, and TypeScript extensions, plus the documented npm/Yarn/pnpm/Bun/Bundler markers. M2-04 expands the detection baseline to Python, Java, Go, PHP, and C#/.NET, including supported ecosystem manifests and package managers. M2-05 adds representative framework and test-tool rules across backend and frontend ecosystems. These additions remain controlled, versioned rules with fixtures; this plan does not imply exhaustive ecosystem coverage.
+The M2-03/M2-04 rule set covers the language extensions and package-manager markers listed above. These are path signals and do not require reading the additional manifests or lockfiles. M2-05 adds representative framework and test-tool rules across backend and frontend ecosystems. These additions remain controlled, versioned rules with fixtures; this plan does not imply exhaustive ecosystem coverage.
 
 Detectors consume M1's filtered inventory. They may inspect paths and file metadata without opening file contents. Content reads are limited to explicit, non-secret manifest formats needed for declarations:
 
@@ -146,7 +151,7 @@ Only files present in the completed M1 inventory are eligible. Readers must reso
 
 - The current implementation is a narrow first slice, not the product support boundary. The planned M2 baseline covers representative backend, frontend, package-manager, database, test-tool, and infrastructure evidence across multiple stacks.
 - Language recognition is extension-based; content sniffing for arbitrary source files is out of scope.
-- Until M2-04 is complete, the implemented language detector recognizes only Ruby, JavaScript, and TypeScript extensions and the explicitly listed package-manager markers; other languages and manager lockfiles are not yet claimed by code.
+- The implemented M2-03/M2-04 language detector recognizes only the extensions and package-manager markers listed above; other languages and manager markers are not claimed by code.
 - Manifest support is intentionally narrow. An unrecognized manifest, dependency alias, generated source file, or dynamic declaration may be missed.
 - A successful profile is not proof that all repository technologies were identified. Warnings and confidence qualify the evidence collected.
 - There is no persistence, incremental detection, runtime observation, code structure analysis, or AI inference in this milestone.

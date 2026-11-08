@@ -1,7 +1,7 @@
 import {
   LANGUAGE_EXTENSION_RULES,
   PACKAGE_MANAGER_DECLARATION_RULES,
-  PACKAGE_MANAGER_LOCKFILE_RULES,
+  PACKAGE_MANAGER_FILE_RULES,
 } from "./detector-rules.js";
 import type {
   InventoryFileInput,
@@ -88,9 +88,17 @@ export function detectLanguagesAndPackageManagers(
       }
     }
     const name = basename(file.path);
-    for (const rule of PACKAGE_MANAGER_LOCKFILE_RULES) {
-      if ((rule.filenames as readonly string[]).includes(name)) {
-        addEvidence("packageManager", rule.name, file.path, "lockfile-name");
+    for (const rule of PACKAGE_MANAGER_FILE_RULES) {
+      const filenameMatch =
+        "filenames" in rule &&
+        (rule.filenames as readonly string[]).includes(name);
+      const suffixMatch =
+        "suffixes" in rule &&
+        (rule.suffixes as readonly string[]).some((suffix) =>
+          name.endsWith(suffix),
+        );
+      if (filenameMatch || suffixMatch) {
+        addEvidence("packageManager", rule.name, file.path, rule.method);
       }
     }
   }

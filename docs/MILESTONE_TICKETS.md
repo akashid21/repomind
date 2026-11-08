@@ -119,13 +119,13 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 
 ### M2-04: Expand baseline detection across representative stacks
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Recognize common languages and package managers beyond the initial Ruby and JavaScript/TypeScript rule set.
-- **Scope:** Extend declarative rule tables and bounded readers to cover a representative baseline for Python, Java, Go, PHP, and C#/.NET alongside existing Ruby, JavaScript, and TypeScript. Include ecosystem-specific manifest and lockfile markers where safely supported. Keep rules separate from detector control flow.
+- **Scope:** Extend declarative rule tables to cover a representative baseline for Python, Java, Go, PHP, and C#/.NET alongside existing Ruby, JavaScript, and TypeScript. Include ecosystem-specific manifest and lockfile path markers where safely supported. This ticket needs no new content readers because these signals come from inventoried names and extensions; keep rules separate from detector control flow.
 - **Out of scope:** Exhaustive language coverage, source-content sniffing, framework detection, AST analysis, and claims about runtime use.
 - **Dependencies:** M2-01, M2-02, M2-03
 - **Acceptance criteria:** Fixtures detect each documented language and package-manager rule, preserve polyglot repositories, cite paths, and ignore absent, malformed, or unknown declarations without inventing claims. Adding a supported mapping does not require changing generic detector control flow.
-- **Security and data integrity:** Add manifest formats to the explicit allowlist with bounded non-evaluating parsers; never run package managers, tests, or repository-defined commands.
+- **Security and data integrity:** Use only normalized inventory paths and existing bounded manifest-reader output; do not open additional repository files, run package managers, tests, or repository-defined commands.
 - **Documentation:** Update the cross-stack language/package-manager support table and known blind spots in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
 
 ### M2-05: Detect frameworks and test tools across stacks

@@ -43,7 +43,7 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 
 **Acceptance:** report identifies technologies from an explicitly documented, cross-stack initial support set with evidence; uncertain or unsupported technologies remain qualified. The pilot is one validation fixture among multiple technology examples.
 
-**Status:** In progress. M2-01 through M2-03 are complete; remaining cross-stack detection and profile work is tracked in M2-04 through M2-08 in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md).
+**Status:** In progress. M2-01 through M2-04 are complete; remaining cross-stack detection and profile work is tracked in M2-05 through M2-08 in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md).
 
 ## Milestone 3 — Code structure analysis
 
