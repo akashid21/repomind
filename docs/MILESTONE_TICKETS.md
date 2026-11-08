@@ -97,14 +97,14 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 
 ### M2-02: Add bounded manifest and configuration readers
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Safely read only the contract-approved files needed by deterministic detectors.
 - **Scope:** Add small typed helpers to select allowlisted paths from inventory, enforce size bounds, read and parse supported data formats without evaluation, and return clear outcomes for malformed, missing, or unsupported inputs.
 - **Out of scope:** Reading arbitrary source files, language parsing, detector rules, persistence, and executing repository tools.
 - **Dependencies:** M2-01
-- **Acceptance criteria:** Readers accept only approved repository-relative inputs contained under the canonical root; oversized inputs are skipped or reported as specified by the contract; malformed data does not crash profile generation or create unsupported claims.
+- **Acceptance criteria:** Readers accept only approved repository-relative inputs present in the M1 inventory and contained under the canonical root; oversized inputs are skipped or reported as specified by the contract; malformed data does not crash profile generation or create unsupported claims. Tests cover malformed, missing, oversized, symlinked, escaping, and unsupported inputs plus count and aggregate-byte limits.
 - **Security and data integrity:** Do not follow symlinks, evaluate code, load environment values, or log file contents; reject path escapes and respect bounded reads.
-- **Documentation:** Update the technology detection contract with implemented reader behavior.
+- **Documentation:** `docs/TECHNOLOGY_DETECTION_CONTRACT.md` documents implemented reader behavior.
 
 ### M2-03: Detect languages and package managers
 

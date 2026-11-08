@@ -96,6 +96,8 @@ Detectors consume M1's filtered inventory. They may inspect paths and file metad
 - `package.json`: parse as JSON data; inspect only `packageManager`, `dependencies`, `devDependencies`, `optionalDependencies`, and `peerDependencies`. Never evaluate scripts or load package code. A `package.json` without a manager-specific field or lockfile does not identify npm, Yarn, pnpm, or Bun.
 - `Gemfile`: inspect as inert text for simple literal dependency declarations only. Never evaluate Ruby expressions, interpolation, `eval`, or subprocess directives.
 
+The M2-02 reader returns only the `packageManager` string and sorted dependency names from the supported JSON fields, or deduplicated literal gem names from a Gemfile. Dependency version values, scripts, and other manifest fields are not returned to callers. Unsupported files absent from the completed inventory are ignored; an eligible file that is malformed, unreadable, or changed since inventory is skipped with a warning.
+
 The first implementation may use additional exact manifest inputs only after adding them to this allowlist with a parser and safety rule. Lockfiles and configuration/deployment files are initially path signals unless a later contract update explicitly authorizes bounded parsing. In particular, `.env` files, credential files, arbitrary source files, README text, and repository scripts are never technology-detection inputs.
 
 Allowlisted content is processed locally in memory only. It is not logged, persisted, or sent to an AI provider. Output includes only recognized technology names, controlled methods, and relative evidence paths; it never copies raw manifest values.
