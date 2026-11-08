@@ -1,6 +1,6 @@
 # Deterministic Technology Detection Contract
 
-**Status:** Defined for Milestone 2
+**Status:** Implemented for Milestone 2
 **Schema version:** 1
 
 This document defines the first deterministic technology profile produced from a local repository. It describes evidence found in repository paths and selected declarations. It does not prove that a detected technology is active at runtime.
@@ -9,7 +9,7 @@ The detection contract is stack-neutral. A technology's presence in the support 
 
 ## Command
 
-The planned command, invoked from the RepoMind project root, is:
+The command, invoked from the RepoMind project root, is:
 
 ```sh
 npm run --silent technology-profile -- <repository-path>
@@ -17,7 +17,7 @@ npm run --silent technology-profile -- <repository-path>
 
 It accepts exactly one local path. Relative paths are resolved from the caller's current working directory. Root validation, canonicalization, containment, traversal, symlink handling, and inventory limits follow [`LOCAL_INVENTORY_CONTRACT.md`](LOCAL_INVENTORY_CONTRACT.md).
 
-On success, stdout contains one schema-versioned JSON profile followed by a newline; diagnostics go to stderr. An invalid root, inventory failure, or other fatal error exits nonzero without JSON. A profile may be marked partial when optional detection inputs cannot be read, are malformed, or exceed detection read limits; it includes stable warning codes so callers can see that evidence may be incomplete. Raw parser errors and file contents are never emitted.
+On success, stdout contains one schema-versioned JSON profile followed by a newline; diagnostics go to stderr. The command runs the M1 metadata-only inventory, reads only the bounded `package.json` and `Gemfile` inputs, and combines the deterministic technology detectors. An invalid argument/root, inventory failure, or other fatal error exits nonzero without JSON. A profile may be marked partial when an eligible manifest cannot be read, is malformed, or exceeds detection read limits; it includes stable warning codes so callers can see that evidence may be incomplete. Raw parser errors and file contents are never emitted.
 
 ## Profile schema
 

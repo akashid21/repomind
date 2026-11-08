@@ -25,6 +25,14 @@ The Milestone 1 local CLI contract, including its JSON schema, exclusions, fixed
 
 Milestone 2 technology profile schema, evidence/confidence semantics, bounded manifest inputs, and safety behavior are documented in [`TECHNOLOGY_DETECTION_CONTRACT.md`](TECHNOLOGY_DETECTION_CONTRACT.md).
 
+For a local repository, generate the schema-v1 profile from the RepoMind project root with:
+
+```sh
+npm run --silent technology-profile -- <repository-path>
+```
+
+The command combines the safe M1 inventory with bounded manifest reads and deterministic detectors. It emits JSON to stdout, diagnostics to stderr, and marks the profile partial when supported manifest inputs are skipped with warnings. It never executes code from the repository.
+
 Record:
 - Repository identity.
 - Branch/ref requested.

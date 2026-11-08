@@ -17,7 +17,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:check": "node --env-file-if-exists=.env --import tsx src/cli/db-check.ts",
-    "inventory": "node --import tsx src/cli/inventory.ts"
+    "inventory": "node --import tsx src/cli/inventory.ts",
+    "technology-profile": "node --import tsx src/cli/technology-profile.ts"
   },
   "dependencies": {
     "pg": "^8.16.3",

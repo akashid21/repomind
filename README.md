@@ -64,6 +64,16 @@ The report lists repository-relative file paths and filesystem sizes, included d
 
 Inventory is metadata-only: it does not open file contents, run repository scripts, install dependencies, or execute builds and tests. Symlinks and configured secret/local credential paths are skipped. Secret protection in this milestone is based on names and paths; it does not scan contents for arbitrary secret values. A successful inventory therefore does not certify that the repository contains no secrets.
 
+## Local technology profile
+
+Generate a deterministic technology profile for a local repository:
+
+```sh
+npm run --silent technology-profile -- ../path-to-repository
+```
+
+The command emits schema-v1 JSON with detected technologies, evidence paths, confidence, and any manifest-reader warnings. A partial profile means one or more supported manifests could not be fully processed; warnings identify the affected input. The command does not execute repository code or scripts, read `.env` values, install dependencies, or contact databases or cloud services. See [`docs/TECHNOLOGY_DETECTION_CONTRACT.md`](docs/TECHNOLOGY_DETECTION_CONTRACT.md) for supported signals, limits, and known detection gaps.
+
 Environment values are validated at startup. Keep `.env` local and never commit it. The structured logger redacts common credential fields; application code should avoid logging configuration objects or database connection strings.
 
 ## Documentation maintenance

@@ -43,7 +43,7 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 
 **Acceptance:** report identifies technologies from an explicitly documented, cross-stack initial support set with evidence; uncertain or unsupported technologies remain qualified. The pilot is one validation fixture among multiple technology examples.
 
-**Status:** In progress. M2-01 through M2-06 are complete; public profile output and cross-stack closeout remain in M2-07 and M2-08 in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md). Detection coverage remains bounded by the declarations and path rules listed in the technology detection contract; additional manifest readers are still required for some ecosystems.
+**Status:** Complete. M2-01 through M2-08 are complete. The local `technology-profile` CLI combines the M1 inventory, bounded manifest reads, and deterministic detectors; representative Rails + React and Node/Express + React fixtures validate the end-to-end flow. Detection coverage remains bounded by the declarations and path rules listed in the technology detection contract; additional manifest readers are still required for some ecosystems.
 
 ## Milestone 3 — Code structure analysis
 

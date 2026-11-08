@@ -152,22 +152,22 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 
 ### M2-07: Emit a stable technology profile
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Provide a CLI entry point that emits the combined technology profile as deterministic JSON.
 - **Scope:** Connect the M1 inventory, bounded readers, and detectors; serialize schema-versioned output with stable ordering and clear failure behavior.
 - **Out of scope:** Database storage, API endpoints, incremental indexing, and changes to the M1 inventory JSON schema.
 - **Dependencies:** M2-03, M2-04, M2-05, M2-06
-- **Acceptance criteria:** The documented CLI accepts one repository path, emits only valid stable JSON on success, keeps diagnostics on stderr, and exits nonzero without partial JSON on fatal errors; repeated runs over unchanged fixtures produce byte-for-byte identical output.
+- **Acceptance criteria:** `npm run --silent technology-profile -- <repository-path>` accepts one repository path, emits schema-v1 JSON only on stdout, keeps diagnostics on stderr, and exits nonzero without JSON on fatal errors; repeated runs over unchanged repositories produce byte-for-byte identical output.
 - **Security and data integrity:** Reuse M1 root validation and traversal safeguards; profile contains no absolute local paths, source contents, secret values, or unsubstantiated claims.
 - **Documentation:** Document CLI use and profile examples in `README.md` and `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
 
 ### M2-08: Test cross-stack detection and close out documentation
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Verify detection coverage, evidence quality, stable profile output, and safety across representative stacks.
-- **Scope:** Add isolated fixtures for each documented supported stack and category, unsupported signals, missing/malformed/oversized manifests, conflicting evidence, stable output, and secret-like values; validate the profile against the Rails + React pilot and at least one non-pilot stack fixture.
+- **Scope:** Add isolated detector and CLI fixtures for documented rules and categories, unsupported signals, missing/malformed/oversized manifest handling, conflicting technologies, stable output, secret-like values, and non-execution of fixture scripts; validate the end-to-end profile against the Rails + React pilot and a Node/Express + React non-pilot stack.
 - **Out of scope:** Detection features reserved for later milestones, repository code execution, and persistence.
 - **Dependencies:** M2-02, M2-03, M2-04, M2-05, M2-06, M2-07
-- **Acceptance criteria:** Tests prove technology claims are evidence-backed, uncertain or absent signals are not overstated, malformed inputs are handled as specified, outputs are stable, fixture scripts are never run, and pilot validation does not narrow the product contract.
+- **Acceptance criteria:** Unit tests cover supported rule sets and reader limit/failure outcomes; subprocess tests prove claims are evidence-backed, unsupported and absent signals are omitted, malformed inputs produce documented partial profiles, fatal errors emit no JSON, repeated output is stable, secret values and absolute paths are omitted, and fixture scripts are never run. Both pilot and non-pilot profiles pass without narrowing product scope.
 - **Security and data integrity:** Fixtures confirm secret values and absolute paths are not emitted; tests never install dependencies or execute repository scripts.
 - **Documentation:** Update `README.md`, `docs/REPOSITORY_ONBOARDING.md`, `docs/TECHNOLOGY_DETECTION_CONTRACT.md`, and `docs/IMPLEMENTATION_ROADMAP.md` as needed.

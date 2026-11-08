@@ -27,7 +27,16 @@ describe("framework and test-tool detection", () => {
           {
             kind: "package-json",
             path: "web/package.json",
-            dependencies: ["react", "express", "@nestjs/core"],
+            dependencies: [
+              "react",
+              "express",
+              "@nestjs/core",
+              "next",
+              "@angular/core",
+              "vue",
+              "svelte",
+              "jest",
+            ],
             devDependencies: ["vitest", "@playwright/test", "cypress"],
             optionalDependencies: [],
             peerDependencies: [],
@@ -35,6 +44,14 @@ describe("framework and test-tool detection", () => {
         ],
       ),
     ).toEqual([
+      {
+        category: "framework",
+        name: "Angular",
+        confidence: "high",
+        evidence: [
+          { path: "web/package.json", method: "manifest-declaration" },
+        ],
+      },
       {
         category: "framework",
         name: "Express",
@@ -46,6 +63,14 @@ describe("framework and test-tool detection", () => {
       {
         category: "framework",
         name: "NestJS",
+        confidence: "high",
+        evidence: [
+          { path: "web/package.json", method: "manifest-declaration" },
+        ],
+      },
+      {
+        category: "framework",
+        name: "Next.js",
         confidence: "high",
         evidence: [
           { path: "web/package.json", method: "manifest-declaration" },
@@ -66,8 +91,32 @@ describe("framework and test-tool detection", () => {
         ],
       },
       {
+        category: "framework",
+        name: "Svelte",
+        confidence: "high",
+        evidence: [
+          { path: "web/package.json", method: "manifest-declaration" },
+        ],
+      },
+      {
+        category: "framework",
+        name: "Vue",
+        confidence: "high",
+        evidence: [
+          { path: "web/package.json", method: "manifest-declaration" },
+        ],
+      },
+      {
         category: "testTool",
         name: "Cypress",
+        confidence: "high",
+        evidence: [
+          { path: "web/package.json", method: "manifest-declaration" },
+        ],
+      },
+      {
+        category: "testTool",
+        name: "Jest",
         confidence: "high",
         evidence: [
           { path: "web/package.json", method: "manifest-declaration" },
@@ -108,6 +157,7 @@ describe("framework and test-tool detection", () => {
     expect(
       detect([
         "backend/manage.py",
+        "legacy/artisan",
         "tests/vitest.config.ts",
         "ui/cypress.config.ts",
       ]),
@@ -117,6 +167,12 @@ describe("framework and test-tool detection", () => {
         name: "Django",
         confidence: "medium",
         evidence: [{ path: "backend/manage.py", method: "configuration-path" }],
+      },
+      {
+        category: "framework",
+        name: "Laravel",
+        confidence: "medium",
+        evidence: [{ path: "legacy/artisan", method: "configuration-path" }],
       },
       {
         category: "testTool",

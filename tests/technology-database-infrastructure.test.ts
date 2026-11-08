@@ -22,12 +22,21 @@ describe("database and infrastructure detection", () => {
           {
             kind: "gemfile",
             path: "Gemfile",
-            gemDeclarations: ["pg", "redis"],
+            gemDeclarations: ["pg", "redis", "mysql2", "sqlite3", "mongoid"],
           },
           {
             kind: "package-json",
             path: "api/package.json",
-            dependencies: ["mongoose", "better-sqlite3"],
+            dependencies: [
+              "mongoose",
+              "better-sqlite3",
+              "pg",
+              "mysql",
+              "mongodb",
+              "redis",
+              "ioredis",
+              "sqlite3",
+            ],
             devDependencies: [],
             optionalDependencies: [],
             peerDependencies: [],
@@ -40,6 +49,16 @@ describe("database and infrastructure detection", () => {
         name: "MongoDB",
         confidence: "high",
         evidence: [
+          { path: "Gemfile", method: "manifest-declaration" },
+          { path: "api/package.json", method: "manifest-declaration" },
+        ],
+      },
+      {
+        category: "database",
+        name: "MySQL",
+        confidence: "high",
+        evidence: [
+          { path: "Gemfile", method: "manifest-declaration" },
           { path: "api/package.json", method: "manifest-declaration" },
         ],
       },
@@ -47,19 +66,26 @@ describe("database and infrastructure detection", () => {
         category: "database",
         name: "PostgreSQL",
         confidence: "high",
-        evidence: [{ path: "Gemfile", method: "manifest-declaration" }],
+        evidence: [
+          { path: "Gemfile", method: "manifest-declaration" },
+          { path: "api/package.json", method: "manifest-declaration" },
+        ],
       },
       {
         category: "database",
         name: "Redis",
         confidence: "high",
-        evidence: [{ path: "Gemfile", method: "manifest-declaration" }],
+        evidence: [
+          { path: "Gemfile", method: "manifest-declaration" },
+          { path: "api/package.json", method: "manifest-declaration" },
+        ],
       },
       {
         category: "database",
         name: "SQLite",
         confidence: "high",
         evidence: [
+          { path: "Gemfile", method: "manifest-declaration" },
           { path: "api/package.json", method: "manifest-declaration" },
         ],
       },
@@ -71,13 +97,20 @@ describe("database and infrastructure detection", () => {
       detect([
         "Dockerfile",
         "services/api/Dockerfile.dev",
+        "services/api/.dockerignore",
         "compose.yaml",
+        "compose.yml",
+        "docker/docker-compose.yaml",
+        "docker/docker-compose.yml",
         "ops/terraform/main.tf",
+        "ops/terraform/vars.tf.json",
         "ops/terraform/terraform.lock.hcl",
         "deploy/k8s/kustomization.yaml",
+        "deploy/legacy/kustomization.yml",
         "charts/store/Chart.yaml",
         "infra/cdk.json",
         "deploy/serverless.yml",
+        "deploy/legacy/serverless.yaml",
       ]),
     ).toEqual([
       {
@@ -92,6 +125,7 @@ describe("database and infrastructure detection", () => {
         confidence: "medium",
         evidence: [
           { path: "Dockerfile", method: "configuration-path" },
+          { path: "services/api/.dockerignore", method: "configuration-path" },
           { path: "services/api/Dockerfile.dev", method: "configuration-path" },
         ],
       },
@@ -99,7 +133,18 @@ describe("database and infrastructure detection", () => {
         category: "infrastructure",
         name: "Docker Compose",
         confidence: "medium",
-        evidence: [{ path: "compose.yaml", method: "configuration-path" }],
+        evidence: [
+          { path: "compose.yaml", method: "configuration-path" },
+          { path: "compose.yml", method: "configuration-path" },
+          {
+            path: "docker/docker-compose.yaml",
+            method: "configuration-path",
+          },
+          {
+            path: "docker/docker-compose.yml",
+            method: "configuration-path",
+          },
+        ],
       },
       {
         category: "infrastructure",
@@ -118,6 +163,10 @@ describe("database and infrastructure detection", () => {
             path: "deploy/k8s/kustomization.yaml",
             method: "configuration-path",
           },
+          {
+            path: "deploy/legacy/kustomization.yml",
+            method: "configuration-path",
+          },
         ],
       },
       {
@@ -125,6 +174,10 @@ describe("database and infrastructure detection", () => {
         name: "Serverless Framework",
         confidence: "medium",
         evidence: [
+          {
+            path: "deploy/legacy/serverless.yaml",
+            method: "configuration-path",
+          },
           { path: "deploy/serverless.yml", method: "configuration-path" },
         ],
       },
@@ -135,6 +188,10 @@ describe("database and infrastructure detection", () => {
         evidence: [
           { path: "ops/terraform/main.tf", method: "configuration-path" },
           { path: "ops/terraform/terraform.lock.hcl", method: "lockfile-name" },
+          {
+            path: "ops/terraform/vars.tf.json",
+            method: "configuration-path",
+          },
         ],
       },
     ]);
