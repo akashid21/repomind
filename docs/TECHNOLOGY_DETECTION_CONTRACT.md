@@ -118,6 +118,33 @@ The detector merges duplicate claims and evidence and sorts technologies and evi
 
 The M2-03/M2-04 rule set covers the language extensions and package-manager markers listed above. These are path signals and do not require reading the additional manifests or lockfiles. M2-05 adds representative framework and test-tool rules across backend and frontend ecosystems. These additions remain controlled, versioned rules with fixtures; this plan does not imply exhaustive ecosystem coverage.
 
+### M2-05 framework and test-tool rules
+
+Framework and test-tool declarations are matched against dependency names already returned by the bounded `package.json` and `Gemfile` readers. A matched dependency produces high-confidence `manifest-declaration` evidence at that manifest path. Supported declarations are:
+
+| Category | Technology | Declaration source and exact dependency names |
+|---|---|---|
+| Framework | Rails | Gemfile: `rails` |
+| Framework | Express | package.json: `express` |
+| Framework | NestJS | package.json: `@nestjs/core` |
+| Framework | React | package.json: `react` |
+| Framework | Next.js | package.json: `next` |
+| Framework | Angular | package.json: `@angular/core` |
+| Framework | Vue | package.json: `vue` |
+| Framework | Svelte | package.json: `svelte` |
+| Framework | Django | Exact `manage.py` path basename (configuration-path, medium confidence) |
+| Framework | Laravel | Exact `artisan` path basename (configuration-path, medium confidence) |
+| Test tool | RSpec | Gemfile: `rspec` |
+| Test tool | Minitest | Gemfile: `minitest` |
+| Test tool | Jest | package.json: `jest`, or exact `jest.config.js`, `.cjs`, `.mjs`, or `.ts` basename |
+| Test tool | Vitest | package.json: `vitest`, or exact `vitest.config.js`, `.ts`, or `.mts` basename |
+| Test tool | Playwright | package.json: `@playwright/test` or `playwright`, or exact `playwright.config.js` or `.ts` basename |
+| Test tool | Cypress | package.json: `cypress`, or exact `cypress.config.js` or `.ts` basename |
+
+Configuration-path matches produce medium-confidence evidence. If both a declaration and a configuration path support the same claim, the claim is high confidence and retains both evidence records. These signals describe declarations or markers only. In particular, `manage.py` and `artisan` are conventional markers and may be renamed or used in nonstandard projects.
+
+M2-05 does not read Python, Java, PHP, or .NET dependency manifests. As a result, FastAPI, Spring, and ASP.NET dependency declarations, and Laravel Composer declarations, are not yet detected. Supporting those declarations requires a separate contract-approved bounded parser; generic files such as `pom.xml` or `Program.cs` are not treated as proof of a framework. This is a detection coverage limitation, not an analyzer-support claim.
+
 Detectors consume M1's filtered inventory. They may inspect paths and file metadata without opening file contents. Content reads are limited to explicit, non-secret manifest formats needed for declarations:
 
 - `package.json`: parse as JSON data; inspect only `packageManager`, `dependencies`, `devDependencies`, `optionalDependencies`, and `peerDependencies`. Never evaluate scripts or load package code. A `package.json` without a manager-specific field or lockfile does not identify npm, Yarn, pnpm, or Bun.
@@ -152,6 +179,7 @@ Only files present in the completed M1 inventory are eligible. Readers must reso
 - The current implementation is a narrow first slice, not the product support boundary. The planned M2 baseline covers representative backend, frontend, package-manager, database, test-tool, and infrastructure evidence across multiple stacks.
 - Language recognition is extension-based; content sniffing for arbitrary source files is out of scope.
 - The implemented M2-03/M2-04 language detector recognizes only the extensions and package-manager markers listed above; other languages and manager markers are not claimed by code.
+- M2-05 framework and test-tool support is limited to the exact declarations and configuration basenames in its table. Other framework/package-manager combinations remain undetected until their manifest formats have documented bounded readers.
 - Manifest support is intentionally narrow. An unrecognized manifest, dependency alias, generated source file, or dynamic declaration may be missed.
 - A successful profile is not proof that all repository technologies were identified. Warnings and confidence qualify the evidence collected.
 - There is no persistence, incremental detection, runtime observation, code structure analysis, or AI inference in this milestone.

@@ -67,3 +67,122 @@ export const PACKAGE_MANAGER_DECLARATION_RULES = [
   { prefix: "pnpm", name: "pnpm" },
   { prefix: "bun", name: "Bun" },
 ] as const;
+
+/** Framework and test-tool dependencies returned by the bounded readers. */
+export const DECLARED_TECHNOLOGY_RULES = [
+  {
+    category: "framework",
+    name: "Rails",
+    source: "gemfile",
+    dependencies: ["rails"],
+  },
+  {
+    category: "framework",
+    name: "Express",
+    source: "package-json",
+    dependencies: ["express"],
+  },
+  {
+    category: "framework",
+    name: "NestJS",
+    source: "package-json",
+    dependencies: ["@nestjs/core"],
+  },
+  {
+    category: "framework",
+    name: "React",
+    source: "package-json",
+    dependencies: ["react"],
+  },
+  {
+    category: "framework",
+    name: "Next.js",
+    source: "package-json",
+    dependencies: ["next"],
+  },
+  {
+    category: "framework",
+    name: "Angular",
+    source: "package-json",
+    dependencies: ["@angular/core"],
+  },
+  {
+    category: "framework",
+    name: "Vue",
+    source: "package-json",
+    dependencies: ["vue"],
+  },
+  {
+    category: "framework",
+    name: "Svelte",
+    source: "package-json",
+    dependencies: ["svelte"],
+  },
+  {
+    category: "testTool",
+    name: "RSpec",
+    source: "gemfile",
+    dependencies: ["rspec"],
+  },
+  {
+    category: "testTool",
+    name: "Minitest",
+    source: "gemfile",
+    dependencies: ["minitest"],
+  },
+  {
+    category: "testTool",
+    name: "Jest",
+    source: "package-json",
+    dependencies: ["jest"],
+  },
+  {
+    category: "testTool",
+    name: "Vitest",
+    source: "package-json",
+    dependencies: ["vitest"],
+  },
+  {
+    category: "testTool",
+    name: "Playwright",
+    source: "package-json",
+    dependencies: ["@playwright/test", "playwright"],
+  },
+  {
+    category: "testTool",
+    name: "Cypress",
+    source: "package-json",
+    dependencies: ["cypress"],
+  },
+] as const;
+
+/** Exact config basenames; these provide medium-confidence path evidence. */
+export const CONFIGURATION_TECHNOLOGY_RULES = [
+  {
+    category: "testTool",
+    name: "Jest",
+    filenames: [
+      "jest.config.js",
+      "jest.config.cjs",
+      "jest.config.mjs",
+      "jest.config.ts",
+    ],
+  },
+  {
+    category: "testTool",
+    name: "Vitest",
+    filenames: ["vitest.config.js", "vitest.config.ts", "vitest.config.mts"],
+  },
+  {
+    category: "testTool",
+    name: "Playwright",
+    filenames: ["playwright.config.js", "playwright.config.ts"],
+  },
+  {
+    category: "testTool",
+    name: "Cypress",
+    filenames: ["cypress.config.js", "cypress.config.ts"],
+  },
+  { category: "framework", name: "Django", filenames: ["manage.py"] },
+  { category: "framework", name: "Laravel", filenames: ["artisan"] },
+] as const;

@@ -130,13 +130,13 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 
 ### M2-05: Detect frameworks and test tools across stacks
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Identify configured framework and test-tool hints for representative backend and frontend ecosystems.
-- **Scope:** Add declarative dependency/configuration rules for the documented initial set, including Rails, Express/NestJS, Django/FastAPI, Spring, ASP.NET, Laravel, React/Next.js, Angular, Vue, and Svelte, plus representative test tools such as RSpec, Minitest, Jest, Vitest, Playwright, and Cypress.
-- **Out of scope:** Proving runtime use, analyzing architecture, executing tests, and exhaustive ecosystem coverage.
+- **Scope:** Add declarative dependency rules for Rails and JavaScript frameworks using bounded Gemfile/package.json output, plus exact configuration-path rules for Django, Laravel, and representative test-tool configs. Add rules for RSpec, Minitest, Jest, Vitest, Playwright, and Cypress. Record unsupported framework-manifest combinations that need additional readers.
+- **Out of scope:** Adding new manifest parsers, proving runtime use, analyzing architecture, executing tests, and exhaustive ecosystem coverage.
 - **Dependencies:** M2-01, M2-02, M2-04
-- **Acceptance criteria:** Fixtures cover documented indicators from more than the pilot stack; multiple or conflicting signals remain evidence-backed and qualified; absent or malformed evidence does not become an unsupported claim.
-- **Security and data integrity:** Parse allowlisted files as data only; do not execute package scripts or repository-defined commands.
+- **Acceptance criteria:** Fixtures cover dependency declarations and configuration paths across Ruby, JavaScript, and Python conventions; multiple signals retain evidence and confidence is raised only by direct declaration; absent or unsupported evidence creates no claim. The contract documents the remaining parser-dependent coverage gaps.
+- **Security and data integrity:** Consume only existing bounded manifest-reader output and inventoried paths; do not execute package scripts or repository-defined commands.
 - **Documentation:** Update framework/test-tool rules, evidence semantics, and coverage limits in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
 
 ### M2-06: Detect database and infrastructure hints

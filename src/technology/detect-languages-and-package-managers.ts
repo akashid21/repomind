@@ -8,7 +8,13 @@ import type {
   ManifestReaderResult,
 } from "./manifest-reader.js";
 
-export type TechnologyCategory = "language" | "packageManager";
+export type TechnologyCategory =
+  | "language"
+  | "packageManager"
+  | "framework"
+  | "testTool"
+  | "database"
+  | "infrastructure";
 export type TechnologyConfidence = "high" | "medium" | "low";
 export type TechnologyEvidenceMethod =
   | "file-extension"
