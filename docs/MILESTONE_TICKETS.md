@@ -108,7 +108,7 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 
 ### M2-03: Detect languages and package managers
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Report language and package-manager evidence deterministically from inventory paths and supported manifests.
 - **Scope:** Implement extension-based language signals and explicit manifest/lockfile indicators for the initial supported set, including Ruby and JavaScript/TypeScript; emit path-backed evidence and confidence according to M2-01.
 - **Out of scope:** Framework detection, parsing source code for symbols, dependency installation, and claims about runtime usage.

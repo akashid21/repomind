@@ -91,6 +91,24 @@ Confidence is assigned by deterministic rules. It is not a probability and must 
 
 ## Initial evidence and input boundaries
 
+### M2-03 language and package-manager rules
+
+The initial language detector uses a declarative, typed extension rule table in `src/technology/detector-rules.ts`:
+
+| Language | Recognized extensions |
+|---|---|
+| Ruby | `.rb`, `.rake`, `.gemspec` |
+| JavaScript | `.js`, `.jsx`, `.mjs`, `.cjs` |
+| TypeScript | `.ts`, `.tsx`, `.mts`, `.cts` |
+
+Each recognized inventoried file contributes high-confidence `file-extension` evidence. Multiple languages are retained. Extension matching is case-insensitive; filenames and package-manager markers are exact and case-sensitive.
+
+Package-manager evidence comes from these exact basenames, at any inventoried path: `package-lock.json` or `npm-shrinkwrap.json` (npm), `yarn.lock` (Yarn), `pnpm-lock.yaml` (pnpm), `bun.lock` or `bun.lockb` (Bun), and `Gemfile.lock` (Bundler). These produce high-confidence `lockfile-name` evidence. A supported `package.json` `packageManager` declaration contributes high-confidence `manifest-declaration` evidence only for the recognized `npm`, `yarn`, `pnpm`, or `bun` prefixes. Unknown declaration values are ignored. A generic `package.json` does not identify a package manager.
+
+These mappings are maintained as declarative rules separately from detector logic. Extending coverage requires adding a rule and tests, and documenting the evidence semantics here. The detector does not discover arbitrary new technologies automatically.
+
+The detector merges duplicate claims and evidence and sorts technologies and evidence with ordinal code-point ordering. Its output is a detector result for later profile assembly; M2-06 owns the public CLI and complete profile serialization.
+
 Detectors consume M1's filtered inventory. They may inspect paths and file metadata without opening file contents. Content reads are limited to explicit, non-secret manifest formats needed for declarations:
 
 - `package.json`: parse as JSON data; inspect only `packageManager`, `dependencies`, `devDependencies`, `optionalDependencies`, and `peerDependencies`. Never evaluate scripts or load package code. A `package.json` without a manager-specific field or lockfile does not identify npm, Yarn, pnpm, or Bun.
@@ -124,6 +142,7 @@ Only files present in the completed M1 inventory are eligible. Readers must reso
 
 - The initial detector set prioritizes the pilot's Ruby/Rails and JavaScript/TypeScript/React stack, then narrowly documented package-manager, test-tool, database, and infrastructure indicators.
 - Language recognition is extension-based; content sniffing for arbitrary source files is out of scope.
+- M2-03 currently recognizes only Ruby, JavaScript, and TypeScript extensions and the explicitly listed package-manager markers; other languages and manager lockfiles are not claimed yet.
 - Manifest support is intentionally narrow. An unrecognized manifest, dependency alias, generated source file, or dynamic declaration may be missed.
 - A successful profile is not proof that all repository technologies were identified. Warnings and confidence qualify the evidence collected.
 - There is no persistence, incremental detection, runtime observation, code structure analysis, or AI inference in this milestone.
