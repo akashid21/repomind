@@ -186,3 +186,75 @@ export const CONFIGURATION_TECHNOLOGY_RULES = [
   { category: "framework", name: "Django", filenames: ["manage.py"] },
   { category: "framework", name: "Laravel", filenames: ["artisan"] },
 ] as const;
+
+/** Database client dependencies exposed by the supported bounded readers. */
+export const DATABASE_DECLARATION_RULES = [
+  { name: "PostgreSQL", source: "gemfile", dependencies: ["pg"] },
+  { name: "SQLite", source: "gemfile", dependencies: ["sqlite3"] },
+  { name: "MySQL", source: "gemfile", dependencies: ["mysql2"] },
+  { name: "MongoDB", source: "gemfile", dependencies: ["mongoid"] },
+  { name: "Redis", source: "gemfile", dependencies: ["redis"] },
+  { name: "PostgreSQL", source: "package-json", dependencies: ["pg"] },
+  {
+    name: "SQLite",
+    source: "package-json",
+    dependencies: ["sqlite3", "better-sqlite3"],
+  },
+  {
+    name: "MySQL",
+    source: "package-json",
+    dependencies: ["mysql", "mysql2"],
+  },
+  {
+    name: "MongoDB",
+    source: "package-json",
+    dependencies: ["mongodb", "mongoose"],
+  },
+  {
+    name: "Redis",
+    source: "package-json",
+    dependencies: ["redis", "ioredis"],
+  },
+] as const;
+
+/** Generic database configuration markers do not identify a database vendor. */
+export const DATABASE_CONFIGURATION_RULES = [
+  { name: "Database configuration", filenames: ["database.yml"] },
+] as const;
+
+/** Exact infrastructure configuration names and extensions; no content reads. */
+export const INFRASTRUCTURE_PATH_RULES = [
+  {
+    name: "Docker",
+    filenames: ["Dockerfile", ".dockerignore"],
+    filenamePrefixes: ["Dockerfile."],
+  },
+  {
+    name: "Docker Compose",
+    filenames: [
+      "compose.yaml",
+      "compose.yml",
+      "docker-compose.yaml",
+      "docker-compose.yml",
+    ],
+  },
+  {
+    name: "Terraform",
+    extensions: [".tf", ".tf.json"],
+  },
+  {
+    name: "Terraform",
+    filenames: ["terraform.lock.hcl"],
+    method: "lockfile-name",
+  },
+  {
+    name: "Kubernetes",
+    filenames: ["kustomization.yaml", "kustomization.yml"],
+  },
+  { name: "Helm", filenames: ["Chart.yaml"] },
+  { name: "AWS CDK", filenames: ["cdk.json"] },
+  {
+    name: "Serverless Framework",
+    filenames: ["serverless.yml", "serverless.yaml"],
+  },
+] as const;

@@ -145,6 +145,35 @@ Configuration-path matches produce medium-confidence evidence. If both a declara
 
 M2-05 does not read Python, Java, PHP, or .NET dependency manifests. As a result, FastAPI, Spring, and ASP.NET dependency declarations, and Laravel Composer declarations, are not yet detected. Supporting those declarations requires a separate contract-approved bounded parser; generic files such as `pom.xml` or `Program.cs` are not treated as proof of a framework. This is a detection coverage limitation, not an analyzer-support claim.
 
+### M2-06 database and infrastructure rules
+
+Database client declarations are matched against dependency names from the bounded `package.json` and `Gemfile` readers. They produce high-confidence `manifest-declaration` evidence at the manifest path:
+
+| Database   | Gemfile dependencies | package.json dependencies   |
+| ---------- | -------------------- | --------------------------- |
+| PostgreSQL | `pg`                 | `pg`                        |
+| SQLite     | `sqlite3`            | `sqlite3`, `better-sqlite3` |
+| MySQL      | `mysql2`             | `mysql`, `mysql2`           |
+| MongoDB    | `mongoid`            | `mongodb`, `mongoose`       |
+| Redis      | `redis`              | `redis`, `ioredis`          |
+
+An exact `database.yml` basename reports the generic `Database configuration` hint with medium-confidence `configuration-path` evidence; the detector does not infer a database vendor from that filename.
+
+Infrastructure rules inspect inventory paths only and do not open configuration contents:
+
+| Technology           | Recognized path signal                                                             | Evidence                                |
+| -------------------- | ---------------------------------------------------------------------------------- | --------------------------------------- |
+| Docker               | Exact `Dockerfile`, any basename beginning `Dockerfile.`, or exact `.dockerignore` | `configuration-path`, medium confidence |
+| Docker Compose       | `compose.yaml`, `compose.yml`, `docker-compose.yaml`, or `docker-compose.yml`      | `configuration-path`, medium confidence |
+| Terraform            | `.tf` or `.tf.json` suffix                                                         | `configuration-path`, medium confidence |
+| Terraform            | Exact `terraform.lock.hcl`                                                         | `lockfile-name`, high confidence        |
+| Kubernetes           | `kustomization.yaml` or `kustomization.yml`                                        | `configuration-path`, medium confidence |
+| Helm                 | Exact `Chart.yaml`                                                                 | `configuration-path`, medium confidence |
+| AWS CDK              | Exact `cdk.json`                                                                   | `configuration-path`, medium confidence |
+| Serverless Framework | Exact `serverless.yml` or `serverless.yaml`                                        | `configuration-path`, medium confidence |
+
+These signals show declared clients or repository configuration markers only. They do not prove a live database, cloud account, deployment, or runtime use. The detector never reads `.env`, credential files, cloud credential directories, or configuration values, and makes no network connections. The inventory already excludes secret and local credential paths; arbitrary paths supplied without a matching rule produce no claim.
+
 Detectors consume M1's filtered inventory. They may inspect paths and file metadata without opening file contents. Content reads are limited to explicit, non-secret manifest formats needed for declarations:
 
 - `package.json`: parse as JSON data; inspect only `packageManager`, `dependencies`, `devDependencies`, `optionalDependencies`, and `peerDependencies`. Never evaluate scripts or load package code. A `package.json` without a manager-specific field or lockfile does not identify npm, Yarn, pnpm, or Bun.
@@ -180,6 +209,7 @@ Only files present in the completed M1 inventory are eligible. Readers must reso
 - Language recognition is extension-based; content sniffing for arbitrary source files is out of scope.
 - The implemented M2-03/M2-04 language detector recognizes only the extensions and package-manager markers listed above; other languages and manager markers are not claimed by code.
 - M2-05 framework and test-tool support is limited to the exact declarations and configuration basenames in its table. Other framework/package-manager combinations remain undetected until their manifest formats have documented bounded readers.
+- M2-06 database and infrastructure support is limited to the exact dependency names and path signals in its table; provider-specific configuration contents and additional cloud markers are not inspected.
 - Manifest support is intentionally narrow. An unrecognized manifest, dependency alias, generated source file, or dynamic declaration may be missed.
 - A successful profile is not proof that all repository technologies were identified. Warnings and confidence qualify the evidence collected.
 - There is no persistence, incremental detection, runtime observation, code structure analysis, or AI inference in this milestone.

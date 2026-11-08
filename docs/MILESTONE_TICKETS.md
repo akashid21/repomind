@@ -141,13 +141,13 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 
 ### M2-06: Detect database and infrastructure hints
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Report evidence-backed database and infrastructure hints across common stacks.
-- **Scope:** Add declarative rules for representative database clients/configuration and Docker, Compose, Terraform, Kubernetes, and cloud configuration markers.
+- **Scope:** Add database client rules for dependencies exposed by the bounded Gemfile/package.json readers, a generic database configuration marker, and path-only rules for Docker, Compose, Terraform, Kubernetes, Helm, AWS CDK, and Serverless Framework.
 - **Out of scope:** Connecting to databases or cloud services, validating deployment behavior, inspecting runtime state, and architecture inference.
 - **Dependencies:** M2-01, M2-02, M2-04
-- **Acceptance criteria:** Fixtures detect documented hints across more than one stack; unknown or incomplete evidence remains qualified and path-backed.
-- **Security and data integrity:** Never load `.env` values, credentials, or cloud secrets; parse only allowlisted non-secret configuration and do not contact external systems.
+- **Acceptance criteria:** Fixtures detect database declarations and infrastructure path markers across Ruby and JavaScript examples; evidence is path-backed, confidence follows the contract, and generic/unsupported signals create no claim.
+- **Security and data integrity:** Use only existing bounded manifest output and inventoried paths; never load `.env` values, credentials, or cloud secrets, and do not contact external systems.
 - **Documentation:** Record supported indicators, secret exclusions, and limitations in `docs/TECHNOLOGY_DETECTION_CONTRACT.md`.
 
 ### M2-07: Emit a stable technology profile
