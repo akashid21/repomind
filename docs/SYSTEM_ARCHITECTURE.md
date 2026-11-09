@@ -92,6 +92,8 @@ A local CLI is the first review entry point and should call the same onboarding 
 - Business domain discovery.
 - Project knowledge profile.
 
+The normative analyzer adapter contract, including snapshot provenance and normalized source ranges, is defined in [`LANGUAGE_ANALYZER_CONTRACT.md`](LANGUAGE_ANALYZER_CONTRACT.md). The registry dispatches per-file analyzers; cross-file dependency resolution remains an indexing service responsibility.
+
 Detection rules and analyzers are separate extension points. Adding a known file extension, manifest, or configuration indicator should normally be a rule and fixture change. Adding symbol extraction or language-specific checks requires an analyzer adapter. Neither extension changes the shared onboarding/review workflow. Rule data remains controlled and versioned by RepoMind; loading arbitrary repository-supplied or remote rules is out of scope until validation and trust controls are designed.
 
 ### 3.4 Review orchestrator
@@ -134,7 +136,7 @@ Suggested entities (not a final migration):
 - `knowledge_sources`: provenance for every accepted knowledge item.
 - `webhook_events`: delivery IDs and processing status for idempotency.
 
-All repository-derived records should be scoped to a project and, where relevant, a commit SHA.
+All repository-derived records should be scoped to a project and, where relevant, an immutable snapshot identity; a dirty local working tree needs a content identity in addition to its Git commit SHA.
 
 ## 5. AI provider abstraction
 

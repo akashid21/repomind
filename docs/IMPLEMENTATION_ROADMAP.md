@@ -1,6 +1,6 @@
 # RepoMind Implementation Roadmap
 
-**Version:** 1.2
+**Version:** 1.3
 **Approach:** build a useful vertical slice, then expand
 
 ## Guiding rule
@@ -47,13 +47,15 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 
 ## Milestone 3 — Code structure analysis
 
-- Define and implement a shared language-analyzer adapter contract.
+- Define and implement the shared language-analyzer adapter contract in [`LANGUAGE_ANALYZER_CONTRACT.md`](LANGUAGE_ANALYZER_CONTRACT.md).
 - Add Ruby, JavaScript/TypeScript, and Python analyzers behind the shared adapter contract; keep parser-specific behavior behind adapters.
 - Extract symbols, imports, exports, routes, and source ranges.
 - Store symbols and dependency relationships.
 - Add tests with small fixture repositories.
 
 **Acceptance:** RepoMind can analyze Ruby, JavaScript/TypeScript, and Python fixtures through adapters, identify basic structures/dependencies in the Rails + React pilot and a Node/Express + React validation case, and demonstrate Python analysis on a fixture repository; unsupported files are reported clearly and do not break indexing.
+
+**Status:** In progress. M3-01, the shared contract, is complete; implementation tickets M3-02 through M3-07 are planned in `MILESTONE_TICKETS.md`.
 
 ## Milestone 4 — Project understanding
 
@@ -115,7 +117,7 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 
 Milestones 1 and 2 are complete. M3 and M4 build repository understanding; M5 exercises local AI-assisted review before M6 adds GitHub acquisition and publishing. Proceed milestone by milestone.
 
-Milestone work is tracked as sub-tickets in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md). Use its ticket format when planning each milestone; tickets are created only for milestones selected for upcoming work. M2's remaining tickets were revised on 2026-11-08 to set a representative cross-stack detection baseline and distinguish detection from deep analyzer support.
+Milestone work is tracked as sub-tickets in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md). Use its ticket format when planning each milestone; tickets are created only for milestones selected for upcoming work. M2's remaining tickets were revised on 2026-11-08 to set a representative cross-stack detection baseline and distinguish detection from deep analyzer support. M3 tickets were created on 2026-11-09, with M3-01 defining the normative analyzer contract before implementation.
 
 ## Decision log
 
@@ -131,6 +133,7 @@ Record significant decisions here using:
 | 2026-11-07 | Define technology profile v1 as repository evidence, with bounded reads of `package.json` and literal `Gemfile` declarations | Keep repository content inert and limit exposure while beginning with selected manifest formats | Profile claims cite relative evidence paths and confidence; runtime usage is never inferred, and each additional manifest requires a documented parser and safety rule |
 | 2026-11-08 | Keep product workflow stack-neutral and treat Rails + React as a validation pilot | Make RepoMind useful across repository stacks while using the available POS project for end-to-end experimentation | Detection coverage and deep analyzer coverage are separate; future M2/M3 work must validate representative non-pilot stacks and report unsupported areas |
 | 2026-11-08 | Validate the review core locally before integrating GitHub | Test the product's main code-review value with faster local iteration and fewer platform dependencies | M5 provides local diff review and a reusable input/output core; M6 adapts GitHub PRs and publishing to that core |
+| 2026-11-09 | Define analyzer results around immutable snapshot identity, normalized source ranges, and explicit per-file outcomes | Make parser adapters replaceable while ensuring every extracted fact can be checked against exact source | M3 adapters return deterministic, source-free structural records; unsupported, partial, and failed analysis are distinct outcomes |
 | TBD | Start with local inventory before GitHub App | Faster feedback and simpler debugging | GitHub acquisition comes later |
 | TBD | PostgreSQL as primary store | Durable relational records and queryable review history | Vector search remains optional |
 | TBD | Feedback creates curated project knowledge, not model retraining | Safer, auditable, repository-scoped learning | Human approval in MVP |

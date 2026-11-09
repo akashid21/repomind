@@ -172,6 +172,87 @@ These tickets implement only the Milestone 2 scope in `IMPLEMENTATION_ROADMAP.md
 - **Security and data integrity:** Fixtures confirm secret values and absolute paths are not emitted; tests never install dependencies or execute repository scripts.
 - **Documentation:** Update `README.md`, `docs/REPOSITORY_ONBOARDING.md`, `docs/TECHNOLOGY_DETECTION_CONTRACT.md`, and `docs/IMPLEMENTATION_ROADMAP.md` as needed.
 
+## Milestone 3 — Code structure analysis
+
+These tickets implement the M3 scope in `IMPLEMENTATION_ROADMAP.md`: a shared adapter contract, initial Ruby/JavaScript/TypeScript/Python structure extraction, snapshot-scoped symbols and dependency relationships, and clear unsupported-file reporting. Analysis is static and deterministic; no repository code is executed. The normative input, result, range, provenance, and error semantics are in [`LANGUAGE_ANALYZER_CONTRACT.md`](LANGUAGE_ANALYZER_CONTRACT.md).
+
+### M3-01: Specify the shared language analyzer contract
+
+- **Status:** Done
+- **Goal:** Define a language-neutral contract for analyzer inputs, structural results, provenance, and failure behavior.
+- **Scope:** Specify adapter selection, bounded snapshot-bound input, symbols, imports, exports, routes, references, source ranges, deterministic ordering, unsupported/partial/failed outcomes, and host responsibilities.
+- **Out of scope:** Implementing a registry, parser adapters, cross-file resolution, persistence, and analysis-result CLI output.
+- **Dependencies:** M2-08
+- **Acceptance criteria:** The normative contract is documented in `docs/LANGUAGE_ANALYZER_CONTRACT.md`; source locations have explicit indexing conventions; each output is verifiable against the exact file content and snapshot; unsupported or malformed files cannot be mistaken for successfully analyzed empty files.
+- **Security and data integrity:** Analyzer input is bounded and selected by the host from safe inventory; adapters are pure with respect to repository content and may not access the filesystem, execute code, use network, or emit source contents.
+- **Documentation:** `docs/LANGUAGE_ANALYZER_CONTRACT.md`; linked from `docs/REPOSITORY_ONBOARDING.md` and `docs/SYSTEM_ARCHITECTURE.md`.
+
+### M3-02: Implement the shared analyzer registry and result validation
+
+- **Status:** Not started
+- **Goal:** Provide a deterministic registry that dispatches files to adapters and validates normalized results.
+- **Scope:** Define typed interfaces, deterministic adapter selection, host-side bounded input contract, result provenance checks, safe exception containment, and per-file coverage outcomes.
+- **Out of scope:** Language-specific parsing, cross-file dependency resolution, database persistence, and AI inference.
+- **Dependencies:** M3-01
+- **Acceptance criteria:** Tests cover supported and unsupported extension selection, ambiguous adapter registration, mismatched snapshot/path/content digests, malformed adapter results, parser exceptions, and continuation after a per-file failure.
+- **Security and data integrity:** Host validates paths and limits before reading; adapters cannot read files, run subprocesses, install packages, or access network; diagnostics do not contain source text or secrets.
+- **Documentation:** Update `LANGUAGE_ANALYZER_CONTRACT.md` only if implementation requires a compatible clarification; document the registry entry point in onboarding.
+
+### M3-03: Add the Ruby analyzer adapter
+
+- **Status:** Not started
+- **Goal:** Extract contract-compliant Ruby structures from bounded Ruby source.
+- **Scope:** Implement documented Ruby symbol, import/require, constant/export-like, route, and direct-reference extraction that the selected parser supports; record parser coverage and limitations.
+- **Out of scope:** Executing Ruby, resolving arbitrary dynamic dispatch, Rails runtime inspection, and project-wide architecture inference.
+- **Dependencies:** M3-02
+- **Acceptance criteria:** Ruby fixtures cover nested modules/classes, methods, source ranges, require/import forms, parse errors, unsupported syntax, and representative Rails route declarations where statically identifiable; outputs are deterministic and contract-valid.
+- **Security and data integrity:** Parse source as inert text only; never load gems, evaluate Ruby, or run repository commands.
+- **Documentation:** Document Ruby extraction coverage and gaps in the analyzer contract.
+
+### M3-04: Add JavaScript and TypeScript analyzer adapters
+
+- **Status:** Not started
+- **Goal:** Extract contract-compliant structures from JavaScript and TypeScript source.
+- **Scope:** Implement documented symbols, imports, exports, routes, and direct references for the syntax supported by the selected parser; keep JS/TS distinctions and parser limits explicit.
+- **Out of scope:** Executing JavaScript, type-checking the target project, dependency installation, and framework runtime analysis.
+- **Dependencies:** M3-02
+- **Acceptance criteria:** Fixtures cover functions, classes, types, nested declarations, imports/exports, source ranges, representative statically identifiable routes, malformed syntax, and unsupported constructs; JS and TS results are deterministic and valid.
+- **Security and data integrity:** Parse source text without loading project configuration or executing modules; no target repository scripts or package managers run.
+- **Documentation:** Document JavaScript and TypeScript extraction coverage and gaps in the analyzer contract.
+
+### M3-05: Add the Python analyzer adapter
+
+- **Status:** Not started
+- **Goal:** Extract contract-compliant structures from bounded Python source.
+- **Scope:** Implement documented symbols, imports, exports where statically identifiable, routes, and direct references supported by the selected parser; record syntax-version coverage.
+- **Out of scope:** Executing Python, importing project modules, resolving dynamic imports, and project-wide architecture inference.
+- **Dependencies:** M3-02
+- **Acceptance criteria:** Fixtures cover modules, classes, functions, decorators, imports, source ranges, representative statically identifiable routes, syntax errors, and unsupported syntax; results are deterministic and valid.
+- **Security and data integrity:** Parse source as inert text only; never import project modules, execute Python, install dependencies, or invoke repository commands.
+- **Documentation:** Document Python extraction coverage and gaps in the analyzer contract.
+
+### M3-06: Resolve and store snapshot-scoped symbols and dependencies
+
+- **Status:** Not started
+- **Goal:** Connect per-file analyzer results into repository-level symbol and dependency records.
+- **Scope:** Resolve statically identifiable imports/references across analyzed files, preserve unresolved edges, and store analysis output scoped to repository snapshot using the selected persistence approach.
+- **Out of scope:** Runtime call graphs, embeddings/vector storage, project understanding summaries, and incremental re-index optimization.
+- **Dependencies:** M3-03, M3-04, M3-05
+- **Acceptance criteria:** Cross-file fixtures demonstrate resolved and unresolved references; re-indexing a changed snapshot does not mix symbols across snapshots; storage round-trips contract fields and source ranges.
+- **Security and data integrity:** Persist only paths and structural metadata needed for indexing, with source snapshot provenance; never persist file contents in symbol records.
+- **Documentation:** Document storage and resolution semantics in the analyzer contract and architecture data model.
+
+### M3-07: Validate cross-stack analysis and close out documentation
+
+- **Status:** Not started
+- **Goal:** Verify the analyzer workflow across all initial languages and report coverage gaps clearly.
+- **Scope:** Add integration fixtures for Ruby, JavaScript, TypeScript, Python, polyglot repositories, unsupported files, malformed/oversized inputs, and snapshot provenance; update onboarding and roadmap acceptance details.
+- **Out of scope:** Additional languages, AI-assisted project understanding, GitHub integration, and executing repository tests/builds.
+- **Dependencies:** M3-02, M3-03, M3-04, M3-05, M3-06
+- **Acceptance criteria:** End-to-end tests confirm supported files yield contract-valid structures, unsupported or failed files do not abort other analysis, ordering is stable, provenance is exact, and coverage summaries distinguish detected from analyzed content.
+- **Security and data integrity:** Fixtures and tests do not run target repository code or install dependencies; verify no absolute paths or source text leak into results and diagnostics.
+- **Documentation:** Update `README.md`, `docs/REPOSITORY_ONBOARDING.md`, `docs/LANGUAGE_ANALYZER_CONTRACT.md`, and `docs/IMPLEMENTATION_ROADMAP.md`.
+
 ## Milestone 5 — Local AI-assisted code review
 
 These tickets implement a local review workflow to validate RepoMind's core value before GitHub integration. The review core accepts normalized changes and repository evidence; a local CLI is the first adapter. It must produce findings grounded in the exact frozen review snapshot, keep repository code inert, and report unsupported analysis. GitHub acquisition and publishing belong to M6 and must reuse this core.

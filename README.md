@@ -11,6 +11,7 @@ RepoMind builds an evidence-backed understanding of a software repository and re
 - [`docs/REPOSITORY_ONBOARDING.md`](docs/REPOSITORY_ONBOARDING.md) — repository discovery and persistent project knowledge.
 - [`docs/LOCAL_INVENTORY_CONTRACT.md`](docs/LOCAL_INVENTORY_CONTRACT.md) — local inventory CLI contract, JSON report, exclusions, and safety limits.
 - [`docs/TECHNOLOGY_DETECTION_CONTRACT.md`](docs/TECHNOLOGY_DETECTION_CONTRACT.md) — technology profile schema, evidence rules, and bounded detection inputs.
+- [`docs/LANGUAGE_ANALYZER_CONTRACT.md`](docs/LANGUAGE_ANALYZER_CONTRACT.md) — shared analyzer input/output, provenance, source ranges, and failure behavior.
 - [`docs/PR_REVIEW_ENGINE.md`](docs/PR_REVIEW_ENGINE.md) — local and PR review workflow, evidence, findings, and re-review.
 - [`docs/DEVELOPER_FEEDBACK_AND_LEARNING.md`](docs/DEVELOPER_FEEDBACK_AND_LEARNING.md) — how the reviewer should handle developer replies and learn repository-specific conventions.
 - [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) — staged implementation plan and acceptance criteria.

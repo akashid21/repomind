@@ -88,26 +88,7 @@ export interface TechnologyDetector {
 
 ## 5. Language analyzer contract
 
-```ts
-export interface LanguageAnalyzer {
-  language: string;
-  canAnalyze(filePath: string): boolean;
-  analyze(input: {
-    filePath: string;
-    content: string;
-    commitSha: string;
-  }): Promise<AnalysisResult>;
-}
-```
-
-Extract where supported:
-- classes, modules, methods, functions
-- interfaces, types, constants
-- imports and exports
-- inheritance and implementation
-- references and call relationships
-- routes and API handlers
-- source line and column ranges
+The normative shared analyzer input/result schema, adapter selection, source range conventions, provenance checks, deterministic output rules, and failure behavior are documented in [`LANGUAGE_ANALYZER_CONTRACT.md`](LANGUAGE_ANALYZER_CONTRACT.md). Analyzer results include symbols, imports, exports, statically identifiable routes, references, and source ranges where supported. Each language adapter documents its actual extraction coverage; results do not imply complete semantic analysis or runtime behavior.
 
 Support is reported in explicit levels: inventoried, detected, and analyzed. Detection coverage and analyzer coverage are tracked separately. An unsupported language still participates in safe inventory and generic evidence-based review, while RepoMind reports where specialized analysis is unavailable. The initial analyzer targets are Ruby, JavaScript/TypeScript, and Python; they are validated across Rails + React, Node/Express + React, and Python fixtures/repositories. The pilot does not dictate the shared interfaces.
 
