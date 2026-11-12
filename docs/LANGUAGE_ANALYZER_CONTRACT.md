@@ -29,6 +29,7 @@ The following TypeScript shape is normative at the conceptual level; implementat
 
 ```ts
 export type SupportedLanguage = "ruby" | "javascript" | "typescript" | "python";
+export type AnalysisStatus = "complete" | "partial" | "unsupported" | "failed";
 
 export interface LanguageAnalyzer {
   readonly id: string;
@@ -40,6 +41,7 @@ export interface LanguageAnalyzer {
 }
 
 export interface AnalyzerInput {
+  readonly language: string;       // canonical detected language ID
   readonly filePath: string;       // normalized, repository-relative POSIX path
   readonly snapshotId: string;     // immutable identity of the full analyzed snapshot
   readonly contentHash: string;    // SHA-256 of the exact UTF-8 content supplied
@@ -54,13 +56,24 @@ export interface AnalyzerResult {
   readonly filePath: string;
   readonly snapshotId: string;
   readonly contentHash: string;
-  readonly status: "complete" | "partial" | "unsupported" | "failed";
+  readonly status: AnalysisStatus;
   readonly symbols: readonly CodeSymbol[];
   readonly imports: readonly ImportReference[];
   readonly exports: readonly ExportReference[];
   readonly routes: readonly RouteDeclaration[];
   readonly references: readonly SymbolReference[];
   readonly diagnostics: readonly AnalysisDiagnostic[];
+}
+
+export interface LanguageCoverage {
+  readonly language: string;
+  readonly totalFiles: number;
+  readonly counts: Readonly<Record<AnalysisStatus, number>>;
+}
+
+export interface AnalyzerBatchResult {
+  readonly results: readonly AnalyzerResult[];
+  readonly coverage: readonly LanguageCoverage[];
 }
 ```
 
@@ -135,6 +148,8 @@ Ranges use one-based lines and columns; start positions are inclusive and end po
 
 Malformed source must not crash repository indexing. Parser exceptions are contained at the adapter boundary and must not expose raw source in error messages. Missing or inaccessible files are handled by the host before invoking an analyzer. A `failed` result must never be interpreted as “no symbols exist.”
 
+The shared registry validates request paths and content digests, result provenance, collection shapes, symbol references, and source ranges against the supplied text. It replaces thrown exceptions or invalid results with a safe `failed` result and continues analyzing other valid files. `unsupported` and `failed` results require at least one diagnostic and no structural claims.
+
 ## 6. Determinism and provenance
 
 For identical analyzer version, input language, file path, snapshot ID, content hash, and configuration, results must be byte-for-byte stable after canonical serialization. Results must identify the analyzer and schema version. Do not include absolute paths, timestamps, source excerpts, credentials, or environment values.
@@ -145,7 +160,7 @@ The host must reject a result whose `filePath`, `snapshotId`, or `contentHash` d
 
 The initial cross-language result model supports symbols, imports, exports, routes, source ranges, and direct syntactic references. Each adapter documents which kinds it actually extracts. Dynamic dispatch, reflection, generated code, runtime behavior, and complete call graphs are not implied. Route declarations are emitted only when a supported syntax pattern gives a direct, file-backed declaration.
 
-The registry must report per-file status and aggregate coverage by language and outcome. Files without analyzer support remain inventoried and do not prevent analysis of supported files.
+The registry must report per-file status and aggregate coverage by language and outcome. Batch results and coverage entries are ordered deterministically by repository-relative path and language, respectively. Files without analyzer support remain inventoried and do not prevent analysis of supported files.
 
 ## 8. Milestone 3 implementation sequence
 

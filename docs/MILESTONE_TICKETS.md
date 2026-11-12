@@ -189,12 +189,12 @@ These tickets implement the M3 scope in `IMPLEMENTATION_ROADMAP.md`: a shared ad
 
 ### M3-02: Implement the shared analyzer registry and result validation
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Provide a deterministic registry that dispatches files to adapters and validates normalized results.
 - **Scope:** Define typed interfaces, deterministic adapter selection, host-side bounded input contract, result provenance checks, safe exception containment, and per-file coverage outcomes.
 - **Out of scope:** Language-specific parsing, cross-file dependency resolution, database persistence, and AI inference.
 - **Dependencies:** M3-01
-- **Acceptance criteria:** Tests cover supported and unsupported extension selection, ambiguous adapter registration, mismatched snapshot/path/content digests, malformed adapter results, parser exceptions, and continuation after a per-file failure.
+- **Acceptance criteria:** Tests cover supported and unsupported extension selection, ambiguous adapter registration, mismatched snapshot/path/content digests, malformed adapter results, parser exceptions, continuation after a per-file failure, stable batch ordering, and aggregate coverage counts by language and status.
 - **Security and data integrity:** Host validates paths and limits before reading; adapters cannot read files, run subprocesses, install packages, or access network; diagnostics do not contain source text or secrets.
 - **Documentation:** Update `LANGUAGE_ANALYZER_CONTRACT.md` only if implementation requires a compatible clarification; document the registry entry point in onboarding.
 
