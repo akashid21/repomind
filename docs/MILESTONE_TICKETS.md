@@ -200,12 +200,12 @@ These tickets implement the M3 scope in `IMPLEMENTATION_ROADMAP.md`: a shared ad
 
 ### M3-03: Add the Ruby analyzer adapter
 
-- **Status:** Not started
+- **Status:** Done
 - **Goal:** Extract contract-compliant Ruby structures from bounded Ruby source.
 - **Scope:** Implement documented Ruby symbol, import/require, constant/export-like, route, and direct-reference extraction that the selected parser supports; record parser coverage and limitations.
 - **Out of scope:** Executing Ruby, resolving arbitrary dynamic dispatch, Rails runtime inspection, and project-wide architecture inference.
 - **Dependencies:** M3-02
-- **Acceptance criteria:** Ruby fixtures cover nested modules/classes, methods, source ranges, require/import forms, parse errors, unsupported syntax, and representative Rails route declarations where statically identifiable; outputs are deterministic and contract-valid.
+- **Acceptance criteria:** Ruby fixtures cover nested modules/classes, methods, source ranges, require forms, parse errors, dynamic/unsupported forms, and representative Rails route declarations where statically identifiable; outputs are deterministic and contract-valid.
 - **Security and data integrity:** Parse source as inert text only; never load gems, evaluate Ruby, or run repository commands.
 - **Documentation:** Document Ruby extraction coverage and gaps in the analyzer contract.
 

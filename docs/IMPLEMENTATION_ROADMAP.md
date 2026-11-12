@@ -55,7 +55,7 @@ Build one stack-neutral workflow. Technology-specific behavior belongs in contro
 
 **Acceptance:** RepoMind can analyze Ruby, JavaScript/TypeScript, and Python fixtures through adapters, identify basic structures/dependencies in the Rails + React pilot and a Node/Express + React validation case, and demonstrate Python analysis on a fixture repository; unsupported files are reported clearly and do not break indexing.
 
-**Status:** In progress. M3-01 and M3-02 are complete: the contract and shared registry are in place. M3-03 through M3-07 remain planned in `MILESTONE_TICKETS.md`.
+**Status:** In progress. M3-01 through M3-03 are complete: the contract, shared registry, and Prism-backed Ruby analyzer are in place. M3-04 through M3-07 remain planned in `MILESTONE_TICKETS.md`.
 
 ## Milestone 4 — Project understanding
 

@@ -162,6 +162,20 @@ The initial cross-language result model supports symbols, imports, exports, rout
 
 The registry must report per-file status and aggregate coverage by language and outcome. Batch results and coverage entries are ordered deterministically by repository-relative path and language, respectively. Files without analyzer support remain inventoried and do not prevent analysis of supported files.
 
+### Ruby adapter coverage (Prism)
+
+The Ruby adapter uses the official `@ruby/prism` parser and analyzes only the UTF-8 source string supplied by the host. It does not load Ruby, gems, project configuration, or repository files. Parser byte locations are normalized to the contract's one-based UTF-16 source ranges.
+
+The initial extraction set is:
+
+- Class and module declarations, including nested qualified names; instance and singleton method declarations; and constant assignments.
+- File-defined class/module declarations and constants as export-like declarations. Ruby has no general file-level export syntax, so this is structural metadata and does not assert public visibility or runtime loading.
+- Literal `require` and `require_relative` string arguments as imports. Dynamic arguments are omitted. Import bindings are empty because Ruby's require mechanism does not name imported bindings.
+- Direct call names and class superclass expressions as syntactic references. These are unresolved names, not proof of runtime dispatch or target identity.
+- Literal string route paths for receiver-less, one-argument Rails-style `get`, `post`, `put`, `patch`, and `delete` calls, and receiver-less `root` as `GET /`. A literal receiver-less `match` path is emitted without a method because its `via` options are not interpreted. Calls with options that may change the method, resources, dynamic paths, receiver calls, and other DSL constructs are omitted; the adapter does not infer route expansion or associate handlers.
+
+Prism parse errors produce `partial` results with generic, source-safe diagnostics; recovered nodes may still be reported. Parser warnings produce informational diagnostics. The parser's raw messages are not copied into results. The adapter does not implement Ruby semantic analysis, metaprogramming, runtime route evaluation, dynamic require/load tracing, arbitrary call resolution, or complete syntax coverage across Ruby versions. A file without parse errors may have `complete` status while still being subject to these documented extraction limits.
+
 ## 8. Milestone 3 implementation sequence
 
 The contract is implemented incrementally through the M3 tickets in [`MILESTONE_TICKETS.md`](MILESTONE_TICKETS.md). Parser selection and dependencies are decided in the language-specific analyzer tickets; adding a parser must not change the shared result semantics above.
